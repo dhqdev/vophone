@@ -115,7 +115,7 @@ Com o quiosque ligado:
 
 O vophone se atualiza sozinho quando sai uma versão nova no GitHub (a cada 6 horas, no Wi-Fi).
 Para procurar na hora: vophone > Configurações > **Procurar atualizações**.
-Como publicar uma versão: [ATUALIZACOES.md](ATUALIZACOES.md).
+Cada mudança que entra no `master` vira uma versão nova sozinha. Detalhes: [ATUALIZACOES.md](ATUALIZACOES.md).
 
 Para instalar um APK feito no computador:
 

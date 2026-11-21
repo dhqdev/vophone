@@ -1,7 +1,11 @@
-# Publishes a new vophone version. Two ways:
+# Publishes a new vophone version. Three ways:
 #
-# 1. On GitHub: Actions > Release > "Run workflow", type the new version (for example 1.0.1) and run.
-# 2. Push a tag:   git tag v1.0.1 && git push origin v1.0.1
+# 1. Automatic: every push to master gets the next version (v1.0.0 -> v1.0.1 -> v1.0.2 ...).
+#    Pushes that only change documentation (.md files, docs/) are skipped,
+#    and so is any commit with [skip ci] in its message.
+# 2. On GitHub: Actions > Release > "Run workflow". Leave the version empty for the next one,
+#    or type a bigger jump (for example 1.1.0 or 2.0.0).
+# 3. Push a tag:   git tag v1.1.0 && git push origin v1.1.0
 #
 # GitHub builds the APK and publishes it as the release vX.Y.Z.
 # Phones with vophone find it by themselves (utils/GithubUpdater.java) and update.
@@ -10,39 +14,107 @@ name: Release
 
 on:
   push:
+    branches:
+      - master
     tags:
       - 'v*.*.*'
+    # Not evaluated for tag pushes, only for pushes to master.
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
   workflow_dispatch:
     inputs:
       version:
-        description: 'Nova versão, por exemplo 1.0.1 (sem o "v"). Sempre maior que a última.'
-        required: true
+        description: 'Versão, por exemplo 1.1.0 (sem o "v"). Deixe vazio para a próxima automática.'
+        required: false
 
 permissions:
   contents: write
 
+# One release at a time, so two quick pushes never get the same version number.
+concurrency:
+  group: release
+  cancel-in-progress: false
+
 jobs:
-  release:
+  version:
     runs-on: ubuntu-22.04
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      tag: ${{ steps.version.outputs.tag }}
+      previous: ${{ steps.version.outputs.previous }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Version
+      - name: Pick the version
         id: version
         env:
           INPUT_VERSION: ${{ inputs.version }}
         run: |
-          if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then
+          set -euo pipefail
+          git fetch --force --tags origin
+          # Same numbering as app/build.gradle and GithubUpdater.versionCodeOf.
+          code() { IFS=. read -r a b c <<< "$1"; echo $((1000000 + 10#$a * 10000 + 10#$b * 100 + 10#$c)); }
+          valid='^[0-9]+\.[0-9]{1,2}\.[0-9]{1,2}$'
+
+          if [ "$GITHUB_REF_TYPE" = "tag" ]; then
+            VERSION="${GITHUB_REF_NAME#v}"
+          elif [ -n "${INPUT_VERSION:-}" ]; then
             VERSION="${INPUT_VERSION#v}"
           else
-            VERSION="${GITHUB_REF_NAME#v}"
+            VERSION=""
+            if git tag --points-at HEAD | grep -Eq '^v[0-9]+\.[0-9]+\.[0-9]+$'; then
+              echo "This commit already has a version: $(git tag --points-at HEAD | tr '\n' ' '). Nothing to do."
+              exit 0
+            fi
           fi
-          if ! echo "$VERSION" | grep -Eq '^[0-9]+\.[0-9]{1,2}\.[0-9]{1,2}$'; then
-            echo "::error::The version must look like 1.2.3, got: $VERSION"
+
+          # Highest published version, leaving out the one being published now.
+          PREVIOUS=""
+          for t in $(git tag --list 'v*'); do
+            v="${t#v}"
+            echo "$v" | grep -Eq "$valid" || continue
+            [ "$v" = "$VERSION" ] && continue
+            if [ -z "$PREVIOUS" ] || [ "$(code "$v")" -gt "$(code "$PREVIOUS")" ]; then PREVIOUS="$v"; fi
+          done
+
+          if [ -z "$VERSION" ]; then
+            if [ -z "$PREVIOUS" ]; then
+              VERSION="1.0.0"
+            else
+              IFS=. read -r major minor patch <<< "$PREVIOUS"
+              major=$((10#$major)); minor=$((10#$minor)); patch=$((10#$patch + 1))
+              if [ "$patch" -gt 99 ]; then patch=0; minor=$((minor + 1)); fi
+              if [ "$minor" -gt 99 ]; then minor=0; major=$((major + 1)); fi
+              VERSION="$major.$minor.$patch"
+            fi
+          fi
+
+          if ! echo "$VERSION" | grep -Eq "$valid"; then
+            echo "::error::The version must look like 1.2.3 (middle and last numbers up to 99), got: $VERSION"
             exit 1
           fi
+          # Phones only install a bigger version, so a smaller one would stop every update.
+          if [ -n "$PREVIOUS" ] && [ "$(code "$VERSION")" -le "$(code "$PREVIOUS")" ]; then
+            echo "::error::Version $VERSION must be bigger than the last one, v$PREVIOUS."
+            exit 1
+          fi
+
+          echo "Publishing v$VERSION (last one: ${PREVIOUS:+v}${PREVIOUS:-none})"
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "tag=v$VERSION" >> "$GITHUB_OUTPUT"
+          echo "previous=${PREVIOUS:+v}$PREVIOUS" >> "$GITHUB_OUTPUT"
+
+  release:
+    needs: version
+    if: needs.version.outputs.version != ''
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       # The Android SDK tools need Java 17; the Gradle version of this project needs Java 11.
       - uses: actions/setup-java@v4
@@ -62,14 +134,35 @@ jobs:
       - name: Build the APK
         run: |
           chmod +x ./gradlew
-          ./gradlew --no-daemon assembleFDroidDebug -PvophoneVersion="${{ steps.version.outputs.version }}"
-          cp app/build/outputs/apk/fDroid/debug/app-fDroid-debug.apk "vophone-${{ steps.version.outputs.tag }}.apk"
+          ./gradlew --no-daemon assembleFDroidDebug -PvophoneVersion="${{ needs.version.outputs.version }}"
+          cp app/build/outputs/apk/fDroid/debug/app-fDroid-debug.apk "vophone-${{ needs.version.outputs.tag }}.apk"
+
+      - name: Write the release notes
+        env:
+          TAG: ${{ needs.version.outputs.tag }}
+          PREVIOUS: ${{ needs.version.outputs.previous }}
+        run: |
+          {
+            echo "O que mudou:"
+            echo
+            if [ -n "$PREVIOUS" ]; then
+              git log --no-merges --pretty='- %s' "$PREVIOUS..HEAD"
+              echo
+              echo "Tudo desde a $PREVIOUS: https://github.com/$GITHUB_REPOSITORY/compare/$PREVIOUS...$TAG"
+            else
+              git log --no-merges --pretty='- %s' -20 HEAD
+            fi
+            echo
+            echo "Para instalar à mão, baixe o vophone-$TAG.apk abaixo. Quem já tem o vophone recebe sozinho."
+          } > release-notes.md
+          cat release-notes.md
 
       - name: Publish the release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ steps.version.outputs.tag }}
+          tag_name: ${{ needs.version.outputs.tag }}
           target_commitish: ${{ github.sha }}
-          name: vophone ${{ steps.version.outputs.tag }}
-          files: vophone-${{ steps.version.outputs.tag }}.apk
-          generate_release_notes: true
+          name: vophone ${{ needs.version.outputs.tag }}
+          files: vophone-${{ needs.version.outputs.tag }}.apk
+          body_path: release-notes.md
+          make_latest: true

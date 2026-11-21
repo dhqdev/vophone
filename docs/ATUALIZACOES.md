@@ -5,13 +5,13 @@ O vophone se atualiza sozinho a partir das versões publicadas no GitHub
 
 ## Como funciona
 
-1. Alguém publica uma versão nova criando uma **tag** como `v1.0.1`.
-2. O GitHub monta o APK sozinho (`.github/workflows/release.yml`, uns 5 a 10 minutos) e publica a versão
-   na aba Releases, com o arquivo `vophone-v1.0.1.apk`.
-3. O vophone procura versão nova **a cada 6 horas**, quando a tela inicial aparece, **só no Wi-Fi**
+1. Toda mudança que entra no `master` vira uma versão nova **sozinha**: o GitHub cria a próxima tag
+   (`v1.0.0` > `v1.0.1` > `v1.0.2`...), monta o APK (`.github/workflows/release.yml`, uns 5 a 10 minutos)
+   e publica a versão na aba Releases, com o arquivo `vophone-v1.0.1.apk` e a lista do que mudou.
+2. O vophone procura versão nova **a cada 6 horas**, quando a tela inicial aparece, **só no Wi-Fi**
    (para não gastar os dados móveis) e **nunca durante uma ligação**.
    Também dá para procurar na hora: vophone > Configurações > **Procurar atualizações**.
-4. Achou versão nova: baixa e instala.
+3. Achou versão nova: baixa e instala.
    - Celular com o **modo quiosque** (vophone administrador do celular) ou com o **sistema vophone** (ROM):
      instala sozinho, sem perguntar nada.
    - Nos outros casos: o Android mostra a tela "Deseja atualizar este app?", é só tocar em **Atualizar**.
@@ -22,26 +22,25 @@ o APK novo uma vez, do jeito normal. A partir daí ele se atualiza sozinho.
 
 ## Publicar uma versão nova
 
-Use sempre um número **maior** que o da última versão, no formato `vX.Y.Z`
-(Y e Z vão de 0 a 99). Exemplos: `v1.0.0`, `v1.0.1`, `v1.1.0`, `v2.0.0`.
+**Não precisa fazer nada**: é só mandar a mudança para o `master`. O GitHub soma 1 no último número
+(`v1.0.1` > `v1.0.2`), e depois de `v1.0.99` vem `v1.1.0`. Acompanhe na aba **Actions** > **Release**.
 
-**Pelo site do GitHub** (mais fácil):
+Não viram versão nova:
 
-1. Abra o repositório, aba **Actions** > **Release** (na lista da esquerda) > botão **Run workflow**.
-2. Digite a versão nova sem o "v" (por exemplo `1.0.1`) e clique em **Run workflow**.
-3. Em uns 5 a 10 minutos aparece a versão `v1.0.1` na aba **Releases**, com o arquivo `vophone-v1.0.1.apk`.
+- Envios que só mudam textos de documentação (arquivos `.md` e a pasta `docs/`), porque o app não muda.
+- Commits com `[skip ci]` na mensagem, para quando quiser mandar algo sem publicar.
 
-**Pelo terminal:**
+**Pular para um número maior** (por exemplo `v1.1.0` ou `v2.0.0`, para marcar uma mudança grande):
 
-```
-git tag v1.0.1
-git push origin v1.0.1
-```
+- Pelo site: aba **Actions** > **Release** > **Run workflow**, digite a versão sem o "v" (por exemplo
+  `1.1.0`) e clique em **Run workflow**. Deixando vazio, publica a próxima automática.
+- Pelo terminal: `git tag v1.1.0` e `git push origin v1.1.0`.
 
-Ou peça para o Claude: "publica a versão 1.0.1".
+O número precisa ser **maior** que o da última versão, no formato `vX.Y.Z` (Y e Z vão de 0 a 99).
+Se for menor, o GitHub recusa, porque os celulares só instalam versões maiores.
 
-Se a montagem falhar (aba Actions em vermelho), a versão fica sem APK e nenhum celular é afetado.
-Corrija, apague a tag e a versão no GitHub, e publique de novo.
+Se a montagem falhar (aba Actions em vermelho), nenhuma versão é criada e nenhum celular é afetado.
+Corrija e mande de novo: a próxima mudança no `master` publica a versão.
 
 ## Instalar um APK feito no computador
 
@@ -59,3 +58,6 @@ Na próxima verificação o vophone volta para a última versão publicada.
 
 O vophone só baixa atualizações das Releases deste repositório. Quem conseguir publicar uma versão nele
 consegue atualizar os celulares, então mantenha a conta do GitHub protegida (verificação em duas etapas).
+
+Como tudo que entra no `master` chega aos celulares em até 6 horas, teste as mudanças grandes antes de mandar
+(por exemplo no emulador ou num celular de teste com o APK feito no computador).
