@@ -24,6 +24,8 @@ Android (AOSP). O vophone usa o **LineageOS**, o mais usado deles, como base e m
   (130%) e o vophone sempre igual (tema claro, um toque simples abre as coisas).
 - Saem do sistema: a tela inicial e o telefone padrão, o atualizador do LineageOS (uma atualização
   oficial apagaria o vophone) e extras como gravador, agenda, música e equalizador.
+- Loja de aplicativos (Play Store, com o pacote do Google do passo 4) no botão Mais > Loja de apps,
+  funcionando também com o modo quiosque ligado.
 - O modo quiosque continua disponível (veja o passo 6).
 
 Os arquivos estão em `vendor/vophone/`:
@@ -98,8 +100,11 @@ Siga a página **"Install LineageOS on <codinome>"** do wiki do seu modelo, usan
    adb sideload lineage-*.zip
    ```
 
-6. **Opcional, mas recomendado para o WhatsApp:** ainda no recovery, grave também o pacote do Google
-   (MindTheGapps, link no wiki). Sem ele não há Play Store e as mensagens do WhatsApp podem chegar atrasadas.
+6. **Recomendado:** ainda no recovery, grave também o pacote do Google (MindTheGapps, link no wiki).
+   É ele que traz a **Play Store**, que aparece no vophone em Mais > **Loja de apps** para baixar outros
+   aplicativos, e faz as mensagens do WhatsApp chegarem na hora.
+   Sem conta Google, dá para instalar no lugar a Aurora Store ou o F-Droid (lojas abertas): o botão
+   Loja de apps do vophone abre a que estiver instalada.
 7. *Reboot system now*.
 
 ## 5. Primeira vez que liga

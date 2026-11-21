@@ -50,7 +50,7 @@ public class ViewPagerHolder extends LinearLayout {
     private String of;
 
     //views
-    private View right, left;
+    private View right, left, arrowHolder;
     private ViewPager viewPager;
     private TextView page_of_;
     private View circles;
@@ -133,7 +133,7 @@ public class ViewPagerHolder extends LinearLayout {
         }
 
         if (!noArrows) {
-            final View arrowHolder = layoutInflater.inflate(R.layout.view_pager_holder_arrows, this, false);
+            arrowHolder = layoutInflater.inflate(R.layout.view_pager_holder_arrows, this, false);
             right = arrowHolder.findViewById(R.id.right_arrow);
             left = arrowHolder.findViewById(R.id.left_arrow);
             right.setOnClickListener(D.longer);
@@ -172,6 +172,12 @@ public class ViewPagerHolder extends LinearLayout {
             right.setVisibility(position + 1 < pagerAdapter.getCount() ? VISIBLE : INVISIBLE);
             left.setVisibility((position > 0) ? VISIBLE : INVISIBLE);
         }
+        // With a single page there is nothing to move to: no arrows and no dots, more room for the page.
+        final int singlePage = pagerAdapter.getCount() <= 1 ? GONE : VISIBLE;
+        if (arrowHolder != null)
+            arrowHolder.setVisibility(singlePage);
+        if (circles != null)
+            circles.setVisibility(singlePage);
         pageIndex = position;
         applyPage_of_();
     }

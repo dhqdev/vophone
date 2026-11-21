@@ -430,4 +430,15 @@
     <string name="kiosk_disabled">Modo quiosque desativado.</string>
     <string name="remove_device_owner">Remover o vophone como administrador</string>
     <string name="remove_device_owner_subtext">O modo quiosque deixa de funcionar e o vophone pode ser desinstalado. Para voltar, é preciso rodar o comando no computador de novo.</string>
+
+    <!-- vophone home screen tiles -->
+    <string name="tile_more">Mais</string>
+    <string name="tile_whatsapp">WhatsApp</string>
+    <string name="tile_facebook">Facebook</string>
+    <string name="tile_app_store">Loja de apps</string>
+    <string name="tile_all_apps">Todos os apps</string>
+    <string name="tile_dial_number">Discar número</string>
+    <string name="tile_recent_calls">Últimas ligações</string>
+    <string name="no_app_store">Este celular não tem loja de aplicativos.</string>
+    <string name="home_date_pattern">d \'de\' MMMM</string>
 </resources>

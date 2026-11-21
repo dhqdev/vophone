@@ -49,6 +49,18 @@ Depois, no celular:
 4. Em Configurações > Personalização > **Número de Emergência**, confira o número do botão SOS (192 por padrão).
 5. Na tela SOS, cadastre os dois contatos de emergência (por exemplo, você e outro familiar).
 
+## Como fica a tela inicial
+
+- Em cima: o dia da semana, a data, a hora e a bateria, em letras grandes.
+- Seis quadrados grandes: **Telefone**, **WhatsApp**, **Câmera**, **Facebook**, **SOS** e **Mais**.
+  - Telefone abre três opções: Contatos, Discar número e Últimas ligações.
+  - WhatsApp e Facebook abrem o app; se ainda não estiver instalado, abrem a página dele na loja.
+  - Uma bolinha vermelha aparece no WhatsApp quando chega mensagem e no Telefone quando há ligação perdida.
+  - Mais tem o resto: Contatos, Chamadas, Discador, Mensagens, Fotos, Vídeos, Alarmes, Remédios,
+    Notificações, **Loja de apps**, Todos os apps, Internet, Mapas, Assistente e Configurações.
+- Contatos colocados na tela inicial (no contato, "Adicionar à Página Inicial") aparecem numa página à direita,
+  com setas para ir e voltar.
+
 ## 3. Tornar o vophone administrador do celular (só uma vez)
 
 O Android só deixa um app virar "dono" do aparelho quando **não há nenhuma conta** cadastrada.
@@ -84,7 +96,9 @@ Com o quiosque ligado:
 - O celular fica sempre no vophone. O botão Início volta para o vophone.
 - A barra de notificações, a lista de apps recentes e as Configurações do Android ficam bloqueadas.
   As notificações aparecem dentro do vophone (tela de Notificações).
-- Só abrem o vophone e os aplicativos que aparecem nele (menos Configurações, loja de apps e outras telas iniciais).
+- Só abrem o vophone, os aplicativos que aparecem nele e a **loja de aplicativos** (Mais > Loja de apps),
+  para baixar outros apps. As Configurações do Android e outras telas iniciais continuam bloqueadas.
+  Um app recém-baixado já abre direto pelo botão "Abrir" da loja.
 - Não dá para desinstalar aplicativos.
 - O menu do botão de ligar continua funcionando, para reiniciar ou desligar o celular.
 

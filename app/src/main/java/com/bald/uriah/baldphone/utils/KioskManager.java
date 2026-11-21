@@ -47,7 +47,7 @@ import java.util.Set;
  * <p>
  * While enabled:
  * - the notification shade, recents and the Android settings are not reachable
- * - only vophone and the apps that appear in it (minus settings, app stores and other launchers) can be opened
+ * - only vophone, the apps that appear in it and the app store can be opened (never the Android settings or other launchers)
  * - apps cannot be uninstalled
  * - vophone is always the home screen and has all of its permissions granted
  */
@@ -238,14 +238,22 @@ public final class KioskManager {
     }
 
     /**
-     * vophone, every app with a launcher icon, the camera, the SMS app and the permission dialogs;
-     * but never the Android settings, app stores or other home screens.
+     * An app was installed or removed: refresh the allowlist right away, so a new app opens
+     * straight from the app store's "Open" button.
+     */
+    public static void onPackagesChanged(Context context) {
+        if (isEnabled(context))
+            updateAllowedPackages(context);
+    }
+
+    /**
+     * vophone, every app with a launcher icon, the camera, the SMS app, the permission dialogs,
+     * the app store and the app installer; but never the Android settings or other home screens.
      */
     private static String[] allowedPackages(Context context) {
         final PackageManager pm = context.getPackageManager();
         final Set<String> blocked = new HashSet<>();
         blocked.addAll(packagesHandling(pm, new Intent(Settings.ACTION_SETTINGS)));
-        blocked.addAll(packagesHandling(pm, new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + context.getPackageName()))));
         blocked.addAll(packagesHandling(pm, new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME)));
 
         final Set<String> allowed = new HashSet<>();
@@ -253,6 +261,10 @@ public final class KioskManager {
         allowed.addAll(packagesHandling(pm, new Intent(MediaStore.ACTION_IMAGE_CAPTURE)));
         allowed.addAll(packagesHandling(pm, new Intent(MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA)));
         allowed.addAll(packagesHandling(pm, new Intent("android.content.pm.action.REQUEST_PERMISSIONS")));
+        // App stores ("Loja de apps" in the "Mais" screen) and the system installer that some of them use.
+        allowed.addAll(packagesHandling(pm, new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + context.getPackageName()))));
+        allowed.addAll(packagesHandling(pm, new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_APP_MARKET)));
+        allowed.addAll(packagesHandling(pm, new Intent(Intent.ACTION_VIEW).setDataAndType(Uri.parse("content://vophone/app.apk"), "application/vnd.android.package-archive")));
         final String smsPackage = Telephony.Sms.getDefaultSmsPackage(context);
         if (smsPackage != null)
             allowed.add(smsPackage);

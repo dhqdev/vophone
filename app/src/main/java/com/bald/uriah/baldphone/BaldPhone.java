@@ -19,9 +19,11 @@ package com.bald.uriah.baldphone;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.util.Log;
 
 import com.bald.uriah.baldphone.activities.UpdatesActivity;
+import com.bald.uriah.baldphone.broadcast_receivers.PackageChangedReceiver;
 import com.bald.uriah.baldphone.databases.alarms.AlarmScheduler;
 import com.bald.uriah.baldphone.databases.reminders.ReminderScheduler;
 import com.bald.uriah.baldphone.services.NotificationListenerService;
@@ -51,6 +53,14 @@ public class BaldPhone extends Application {
             Log.e(TAG, e.getMessage());
             e.printStackTrace();
         }
+        // Kiosk mode: apps installed from the app store can be opened right away.
+        // (Android 8+ does not deliver these broadcasts to receivers declared in the manifest.)
+        final IntentFilter packagesFilter = new IntentFilter();
+        packagesFilter.addAction(Intent.ACTION_PACKAGE_ADDED);
+        packagesFilter.addAction(Intent.ACTION_PACKAGE_REMOVED);
+        packagesFilter.addAction(Intent.ACTION_PACKAGE_REPLACED);
+        packagesFilter.addDataScheme("package");
+        registerReceiver(new PackageChangedReceiver(), packagesFilter);
     }
 
     @Override

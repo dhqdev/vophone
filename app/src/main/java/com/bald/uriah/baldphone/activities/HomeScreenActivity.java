@@ -44,6 +44,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.PopupWindow;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.ColorInt;
@@ -117,6 +118,8 @@ public class HomeScreenActivity extends BaldActivity {
     private BaldPrefsUtils baldPrefsUtils;
     private ViewPagerHolder viewPagerHolder;
     private BatteryView batteryView;
+    @Nullable
+    private TextView batteryText;
     private boolean lowBatteryAlert;
     /**
      * Listens to changes in battery {@value Intent#ACTION_BATTERY_CHANGED}
@@ -131,6 +134,8 @@ public class HomeScreenActivity extends BaldActivity {
                 final int chargePlug = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1);
                 final boolean charged = chargePlug == BatteryManager.BATTERY_PLUGGED_AC || chargePlug == BatteryManager.BATTERY_PLUGGED_WIRELESS || chargePlug == BatteryManager.BATTERY_PLUGGED_USB;
                 batteryView.setLevel(batteryPct, charged);
+                if (batteryText != null)
+                    batteryText.setText(batteryPct + "%");
                 if (lowBatteryAlert)
                     getWindow().setStatusBarColor((batteryPct < D.LOW_BATTERY_LEVEL && !charged) ? ContextCompat.getColor(context, R.color.battery_low) : D.DEFAULT_STATUS_BAR_COLOR);
             }
@@ -416,14 +421,17 @@ public class HomeScreenActivity extends BaldActivity {
         viewPagerHolder = findViewById(R.id.view_pager_holder);
 
         final ViewGroup top_bar = findViewById(R.id.top_bar);
-        int tmpPadding = Math.min(screenSize.x, screenSize.y) / 45;
-        for (int i = 0; i < top_bar.getChildCount(); i++) {
-            top_bar.getChildAt(i).setPadding(tmpPadding, tmpPadding, tmpPadding, tmpPadding);
+        if (top_bar.findViewById(R.id.battery_text) == null) { // the old top bar (landscape)
+            int tmpPadding = Math.min(screenSize.x, screenSize.y) / 45;
+            for (int i = 0; i < top_bar.getChildCount(); i++) {
+                top_bar.getChildAt(i).setPadding(tmpPadding, tmpPadding, tmpPadding, tmpPadding);
+            }
         }
 
         sosButton = top_bar.findViewById(R.id.sos);
         soundButton = top_bar.findViewById(R.id.sound);
         batteryView = top_bar.findViewById(R.id.battery);
+        batteryText = top_bar.findViewById(R.id.battery_text);
         notificationsButton = top_bar.findViewById(R.id.notifications);
         flashButton = top_bar.findViewById(R.id.flash);
     }
