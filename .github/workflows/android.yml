@@ -1,10 +1,8 @@
-# Checks that vophone still builds, on every push to master and on pull requests.
+# Checks that vophone still builds on pull requests.
+# Pushes to master are built by release.yml, which also publishes them as a new version.
 name: Android CI
 
 on:
-  push:
-    branches:
-      - master
   pull_request:
 
 jobs:
