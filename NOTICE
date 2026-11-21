@@ -3,3 +3,13 @@
 =============================================================================
 This product includes software developed by
 BaldPhone (https://baldphone.com)
+
+Third-party code vendored into app/src/main/java (Apache License 2.0),
+because their artifacts were only published on JCenter, which shut down:
+ - Lantern 2.0.0 (github.nisrulz.lantern) - Copyright (C) 2017 Nishant Srivastava
+   https://github.com/nisrulz/lantern
+ - RecyclerView-FlexibleDivider 1.4.0 (com.yqritc.recyclerviewflexibledivider) - Copyright yqritc
+   https://github.com/yqritc/RecyclerView-FlexibleDivider
+ - RtlViewPager 2.0.0 (com.duolingo.open.rtlviewpager) - Copyright Duolingo
+   https://github.com/duolingo/rtl-viewpager
+Their android.support imports were migrated to AndroidX.
