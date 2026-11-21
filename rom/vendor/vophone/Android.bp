@@ -10,11 +10,23 @@ android_app_import {
     dex_preopt: {
         enabled: false,
     },
+    // Removed from the system: vophone replaces them, or they only add confusion.
+    // Delete a line to keep that app.
     overrides: [
+        // home screen (vophone is the home screen)
         "Launcher3",
         "Launcher3QuickStep",
         "Trebuchet",
         "TrebuchetQuickStep",
+        // phone app (vophone is the phone app)
         "Dialer",
+        // LineageOS updater: an official update would not include vophone
+        "Updater",
+        // extras an elderly user does not need
+        "AudioFX",
+        "Eleven",
+        "Twelve",
+        "Recorder",
+        "Etar",
     ],
 }

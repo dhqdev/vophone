@@ -1,8 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Elderly-friendly defaults for a freshly installed vophone system.
+     Everything here can still be changed later in the Android settings (with kiosk mode off). -->
 <resources>
     <!-- Screen stays on for 2 minutes -->
     <integer name="def_screen_off_timeout">120000</integer>
     <!-- No swipe-to-unlock screen: pressing the power button goes straight to vophone.
          vophone's accidental-touch guard protects against pocket touches. Remove this line to keep the lock screen. -->
     <bool name="def_lockscreen_disabled">true</bool>
+    <!-- The screen does not turn sideways by itself -->
+    <bool name="def_accelerometer_rotation">false</bool>
+    <!-- Automatic brightness, starting bright -->
+    <bool name="def_screen_brightness_automatic_mode">true</bool>
+    <integer name="def_screen_brightness">204</integer>
+    <!-- Faster animations: the phone feels quicker -->
+    <fraction name="def_window_animation_scale">50%</fraction>
+    <fraction name="def_window_transition_scale">50%</fraction>
+    <!-- Touch and hold takes 1 second, so shaky fingers do not open menus by accident -->
+    <integer name="def_long_press_timeout_millis">1000</integer>
+    <!-- Feedback: vibration on touch, keypad tones, touch sounds, sound when charging -->
+    <bool name="def_haptic_feedback">true</bool>
+    <bool name="def_dtmf_tones_enabled">true</bool>
+    <bool name="def_sound_effects_enabled">true</bool>
+    <bool name="def_charging_sounds_enabled">true</bool>
+    <!-- Still vibrates when the ringer is silenced by mistake -->
+    <bool name="def_vibrate_in_silent">true</bool>
+    <!-- Notification light blinks for missed calls / messages (if the phone has one) -->
+    <bool name="def_notification_pulse">true</bool>
+    <!-- Date, time and time zone from the mobile network -->
+    <bool name="def_auto_time">true</bool>
+    <bool name="def_auto_time_zone">true</bool>
 </resources>

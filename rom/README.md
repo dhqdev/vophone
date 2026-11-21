@@ -12,8 +12,18 @@ Android (AOSP). O vophone usa o **LineageOS**, o mais usado deles, como base e m
 - **Sem** a interface do fabricante, **sem** a tela inicial padrão e **sem** o app de telefone padrão.
 - O vophone vem dentro do sistema como tela inicial e como telefone (tela de ligação com botões grandes).
 - As permissões do vophone já vêm concedidas: não aparece nenhuma tela de "Permitir?".
-- Tela de bloqueio de arrastar desligada: apertou o botão de ligar, já aparece o vophone.
-- Tela apaga só depois de 2 minutos.
+- Configurações do sistema já ajustadas para idosos:
+  - sem tela de bloqueio de arrastar: apertou o botão de ligar, já aparece o vophone;
+  - botões Voltar / Início embaixo da tela, em vez de gestos de arrastar;
+  - a tela não gira sozinha, brilho automático começando alto, tela apaga só depois de 2 minutos;
+  - animações mais rápidas;
+  - "tocar e segurar" leva 1 segundo, para dedos trêmulos não abrirem menus sem querer;
+  - vibração ao tocar, som do teclado e som ao carregar ligados;
+  - data, hora e fuso horário automáticos pela operadora.
+- Na primeira vez que o vophone abre: campainha e volume da ligação no máximo, letras maiores
+  (130%) e o vophone sempre igual (tema claro, um toque simples abre as coisas).
+- Saem do sistema: a tela inicial e o telefone padrão, o atualizador do LineageOS (uma atualização
+  oficial apagaria o vophone) e extras como gravador, agenda, música e equalizador.
 - O modo quiosque continua disponível (veja o passo 6).
 
 Os arquivos estão em `vendor/vophone/`:
@@ -24,7 +34,8 @@ Os arquivos estão em `vendor/vophone/`:
 | `vophone.mk` | Liga tudo isso ao produto do celular |
 | `default-permissions-vophone.xml` | Permissões já concedidas |
 | `overlay/.../config.xml` | vophone como app de telefone do sistema |
-| `overlay/.../defaults.xml` | Sem tela de bloqueio, tela apaga em 2 minutos |
+| `overlay/.../config.xml` (navegação) | Botões Voltar / Início em vez de gestos |
+| `overlay/.../defaults.xml` | Padrões do sistema para idosos (lista acima) |
 
 ## 0. O celular tem suporte?
 
@@ -121,3 +132,5 @@ Baixe o sistema original do fabricante para o modelo e grave com a ferramenta of
 
 Estes arquivos foram escritos para LineageOS 20 a 22 (Android 13 a 15). **Ainda não foram compilados
 nem testados em um aparelho**: o primeiro build para o modelo do celular pode precisar de ajustes.
+Se a compilação reclamar de um nome na lista `overrides` do `Android.bp`, apague aquela linha.
+Sem a tela inicial padrão, o botão de apps recentes deixa de fazer alguma coisa (de propósito).
