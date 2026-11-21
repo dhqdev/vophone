@@ -357,7 +357,11 @@
         <!-- Result of installing a vophone update downloaded from GitHub (utils/GithubUpdater.java) -->
         <receiver
             android:name=".broadcast_receivers.UpdateInstallReceiver"
-            android:exported="false" />
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+            </intent-filter>
+        </receiver>
         <receiver
             android:name=".broadcast_receivers.BootUpBroadcastReceiver"
             android:enabled="${fullApp}">

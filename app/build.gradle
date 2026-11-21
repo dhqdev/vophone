@@ -38,8 +38,9 @@ android {
         // Local builds: 103 (older than any GitHub release, so the phone takes the next release).
         versionCode vophoneVersion ? vophoneVersionCode(vophoneVersion) : 103
         versionName vophoneVersion ?: "0.0.0-local"
-        // GitHub repository whose releases update vophone (utils/GithubUpdater.java)
-        buildConfigField "String", "UPDATE_REPO", "\"dhqdev/vophone\""
+        // Where vophone looks for new versions (utils/GithubUpdater.java): the latest GitHub release of this repository.
+        // -PvophoneUpdateApi=<url> points a test build somewhere else.
+        buildConfigField "String", "UPDATE_API", "\"${project.findProperty('vophoneUpdateApi') ?: 'https://api.github.com/repos/dhqdev/vophone/releases/latest'}\""
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         manifestPlaceholders = [fullApp: "true", notFullApp: "false", recentCalls: "true", notRecentCalls: "false"]
 

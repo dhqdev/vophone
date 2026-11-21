@@ -20,11 +20,13 @@ import android.content.pm.PackageInstaller;
 import android.util.Log;
 
 import com.bald.uriah.baldphone.R;
+import com.bald.uriah.baldphone.activities.HomeScreenActivity;
 import com.bald.uriah.baldphone.utils.BaldToast;
 
 /**
  * Result of installing a vophone update (see utils/GithubUpdater.java).
  * When Android needs the user to confirm, shows its "Update this app?" screen.
+ * After the update, reopens vophone's home screen.
  */
 public class UpdateInstallReceiver extends BroadcastReceiver {
     public static final String EXTRA_INTERACTIVE = "interactive";
@@ -32,6 +34,16 @@ public class UpdateInstallReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        if (Intent.ACTION_MY_PACKAGE_REPLACED.equals(intent.getAction())) {
+            // While vophone was being replaced, Android may have shown its own home screen:
+            // bring vophone's home screen back right away.
+            try {
+                context.startActivity(new Intent(context, HomeScreenActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+            } catch (Exception e) {
+                Log.e(TAG, "could not reopen the home screen after the update", e);
+            }
+            return;
+        }
         final int status = intent.getIntExtra(PackageInstaller.EXTRA_STATUS, PackageInstaller.STATUS_FAILURE);
         switch (status) {
             case PackageInstaller.STATUS_PENDING_USER_ACTION:

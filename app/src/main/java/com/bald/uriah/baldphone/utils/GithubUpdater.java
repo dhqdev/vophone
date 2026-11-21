@@ -48,7 +48,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Updates vophone from the GitHub releases of {@link BuildConfig#UPDATE_REPO}.
+ * Updates vophone from the GitHub releases of this repository ({@link BuildConfig#UPDATE_API}).
  * <p>
  * Every tag "vX.Y.Z" pushed to GitHub builds an APK and publishes it as a release
  * (.github/workflows/release.yml). vophone looks for a newer release at most every few hours
@@ -125,7 +125,14 @@ public final class GithubUpdater {
     }
 
     private static void run(Context context, boolean interactive) throws Exception {
-        final JSONObject release = new JSONObject(new String(get("https://api.github.com/repos/" + BuildConfig.UPDATE_REPO + "/releases/latest"), "UTF-8"));
+        final JSONObject release;
+        try {
+            release = new JSONObject(new String(get(BuildConfig.UPDATE_API), "UTF-8"));
+        } catch (java.io.FileNotFoundException e) { // no version published yet
+            if (interactive)
+                toast(context, R.string.baldphone_is_up_to_date, BaldToast.TYPE_INFORMATIVE);
+            return;
+        }
         final String tag = release.optString("tag_name");
         final int latestCode = versionCodeOf(tag);
         final String apkUrl = apkUrl(release);
@@ -213,6 +220,8 @@ public final class GithubUpdater {
                 url = location;
                 continue;
             }
+            if (code == HttpURLConnection.HTTP_NOT_FOUND)
+                throw new java.io.FileNotFoundException(url);
             if (code != HttpURLConnection.HTTP_OK)
                 throw new IOException("HTTP " + code + " for " + url);
             return connection.getInputStream();
