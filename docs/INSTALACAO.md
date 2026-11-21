@@ -43,7 +43,7 @@ Depois, no celular:
    Com isso o vophone ajusta sozinho, uma vez: campainha e volume da ligação no máximo, letras em 130%,
    tela apagando só depois de 2 minutos e tela sem girar sozinha.
 2. Quando perguntar qual tela inicial usar, escolha **vophone** e "Sempre".
-3. No vophone, abra Configurações > **Tela de ligação com botões grandes** e aceite o vophone como
+3. No vophone, abra Configurações > **Ligações com botões grandes** e aceite o vophone como
    aplicativo de telefone padrão. A partir daí as ligações recebidas e feitas aparecem com os botões
    grandes ATENDER / RECUSAR / DESLIGAR.
 4. Em Configurações > Personalização > **Número de Emergência**, confira o número do botão SOS (192 por padrão).

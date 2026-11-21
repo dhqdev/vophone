@@ -131,12 +131,14 @@ public class CallActivity extends AppCompatActivity implements CallManager.Liste
     protected void onStart() {
         super.onStart();
         CallManager.addListener(this);
+        CallManager.setCallScreenVisible(true);
         handler.post(ticker);
     }
 
     @Override
     protected void onStop() {
         CallManager.removeListener(this);
+        CallManager.setCallScreenVisible(false);
         handler.removeCallbacks(ticker);
         setProximityScreenOff(false);
         super.onStop();

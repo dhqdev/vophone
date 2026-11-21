@@ -39,6 +39,7 @@ import com.bald.uriah.baldphone.utils.CallManager;
 public class BaldInCallService extends InCallService {
     private static final String TAG = BaldInCallService.class.getSimpleName();
     private static final String CHANNEL_ID = "vophone_calls";
+    private static final String ONGOING_CHANNEL_ID = "vophone_ongoing_call";
     private static final int NOTIFICATION_ID = 4210;
     private final CallManager.Listener listener = this::updateNotification;
 
@@ -96,7 +97,8 @@ public class BaldInCallService extends InCallService {
         if (notificationManager == null)
             return;
         final Call call = CallManager.getPrimaryCall();
-        if (call == null || !CallManager.hasOngoingCall()) {
+        // No notification while the call screen is showing: it would cover the top of the screen.
+        if (call == null || !CallManager.hasOngoingCall() || CallManager.isCallScreenVisible()) {
             notificationManager.cancel(NOTIFICATION_ID);
             return;
         }
@@ -104,6 +106,10 @@ public class BaldInCallService extends InCallService {
             final NotificationChannel channel = new NotificationChannel(CHANNEL_ID, getString(R.string.calls_channel), NotificationManager.IMPORTANCE_HIGH);
             channel.setSound(null, null); // the system already rings
             notificationManager.createNotificationChannel(channel);
+            // An answered call only needs a quiet reminder in the status bar, not a pop-up.
+            final NotificationChannel ongoingChannel = new NotificationChannel(ONGOING_CHANNEL_ID, getString(R.string.ongoing_call), NotificationManager.IMPORTANCE_LOW);
+            ongoingChannel.setSound(null, null);
+            notificationManager.createNotificationChannel(ongoingChannel);
         }
         final PendingIntent pendingIntent = PendingIntent.getActivity(
                 this,
@@ -111,12 +117,12 @@ public class BaldInCallService extends InCallService {
                 CallActivity.newIntent(this),
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         final boolean ringing = CallManager.getState(call) == Call.STATE_RINGING;
-        final NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+        final NotificationCompat.Builder builder = new NotificationCompat.Builder(this, ringing ? CHANNEL_ID : ONGOING_CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_call_white)
                 .setContentTitle(getString(ringing ? R.string.incoming_call : R.string.ongoing_call))
                 .setContentText(getString(R.string.tap_to_return_to_call))
                 .setCategory(NotificationCompat.CATEGORY_CALL)
-                .setPriority(NotificationCompat.PRIORITY_MAX)
+                .setPriority(ringing ? NotificationCompat.PRIORITY_MAX : NotificationCompat.PRIORITY_LOW)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setOngoing(true)
                 .setOnlyAlertOnce(true)

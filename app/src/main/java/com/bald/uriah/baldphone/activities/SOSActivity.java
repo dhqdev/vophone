@@ -61,6 +61,16 @@ public class SOSActivity extends BaldActivity {
             R.string.emergency_police,
             R.string.emergency_international
     };
+    /**
+     * Short versions of {@link #EMERGENCY_NUMBER_LABELS} for the big button on the SOS screen.
+     */
+    @StringRes
+    private static final int[] EMERGENCY_NUMBER_SHORT_LABELS = {
+            R.string.emergency_samu_short,
+            R.string.emergency_firefighters_short,
+            R.string.emergency_police_short,
+            R.string.emergency_international_short
+    };
     private BaldLinearLayoutButton[] ec;
     private BaldLinearLayoutButton ecReal;
 
@@ -117,7 +127,7 @@ public class SOSActivity extends BaldActivity {
 
     private static CharSequence getEmergencyLabel(Context context, String number) {
         final int index = emergencyNumberIndex(number);
-        return index == -1 ? context.getString(R.string.emergency_services) : context.getString(EMERGENCY_NUMBER_LABELS[index]);
+        return index == -1 ? context.getString(R.string.emergency_services) : context.getString(EMERGENCY_NUMBER_SHORT_LABELS[index]);
     }
 
     @Override

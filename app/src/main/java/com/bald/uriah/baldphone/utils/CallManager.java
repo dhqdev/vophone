@@ -43,6 +43,7 @@ public final class CallManager {
     public static final int REQUEST_CODE_DEFAULT_DIALER = 4242;
     private static final List<Call> calls = new CopyOnWriteArrayList<>();
     private static final List<Listener> listeners = new CopyOnWriteArrayList<>();
+    private static boolean callScreenVisible;
     private static final Call.Callback callCallback = new Call.Callback() {
         @Override
         public void onStateChanged(Call call, int state) {
@@ -82,6 +83,18 @@ public final class CallManager {
         call.unregisterCallback(callCallback);
         calls.remove(call);
         notifyListeners();
+    }
+
+    /**
+     * The call screen tells when it is on screen, so the call notification does not cover it.
+     */
+    public static void setCallScreenVisible(boolean visible) {
+        callScreenVisible = visible;
+        notifyListeners();
+    }
+
+    public static boolean isCallScreenVisible() {
+        return callScreenVisible;
     }
 
     public static void addListener(Listener listener) {

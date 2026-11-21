@@ -23,6 +23,8 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -31,12 +33,12 @@ import android.provider.ContactsContract;
 import android.telephony.PhoneNumberUtils;
 import android.util.Log;
 import android.util.Pair;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
@@ -226,10 +228,26 @@ public class SingleContactActivity extends BaldActivity {
             tv_value.setText(pair.second);
             call.setOnClickListener(v -> DialerActivity.call(pair.second, this, false));
             message.setOnClickListener(v -> S.sendMessage(pair.second, this));
+            styleCallButton((BaldPictureTextButton) call, (BaldPictureTextButton) message);
 
             ll.addView(layout);
         }
 
+    }
+
+    /**
+     * "Call" is the main action: big white text on the green button. "Message" stays readable too.
+     */
+    private static void styleCallButton(BaldPictureTextButton call, BaldPictureTextButton message) {
+        final TextView callText = call.getTextView();
+        callText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 30);
+        callText.setTextColor(Color.WHITE);
+        callText.setTypeface(callText.getTypeface(), Typeface.BOLD);
+        callText.setPadding(callText.getPaddingLeft() + 16, 0, 0, 0);
+        call.getImageView().setColorFilter(Color.WHITE);
+        call.getImageView().getLayoutParams().width = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 40, call.getResources().getDisplayMetrics());
+        message.getTextView().setTextSize(TypedValue.COMPLEX_UNIT_SP, 21);
+        message.getTextView().setPadding(16, 0, 0, 0);
     }
 
     private void inflateWhatsapp() {
@@ -287,6 +305,10 @@ public class SingleContactActivity extends BaldActivity {
                 home = view.findViewById(R.id.home),
                 favorite = view.findViewById(R.id.favorite),
                 sos = view.findViewById(R.id.sos);
+        for (final BaldPictureTextButton button : new BaldPictureTextButton[]{home, favorite, sos}) {
+            button.getTextView().setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+            button.getTextView().setPadding(16, 0, 0, 0);
+        }
 
         Toggeler.newTextImageToggeler(
                 home,
