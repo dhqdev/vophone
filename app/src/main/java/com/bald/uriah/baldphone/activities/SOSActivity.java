@@ -29,12 +29,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
 
 import com.bald.uriah.baldphone.R;
 import com.bald.uriah.baldphone.activities.contacts.ContactsActivity;
 import com.bald.uriah.baldphone.adapters.ContactRecyclerViewAdapter;
 import com.bald.uriah.baldphone.databases.contacts.MiniContact;
 import com.bald.uriah.baldphone.databases.home_screen_pins.HomeScreenPinHelper;
+import com.bald.uriah.baldphone.utils.BPrefs;
 import com.bald.uriah.baldphone.views.BaldLinearLayoutButton;
 
 import java.util.ArrayList;
@@ -47,6 +49,18 @@ import static com.bald.uriah.baldphone.databases.home_screen_pins.HomeScreenPinH
 
 public class SOSActivity extends BaldActivity {
     private static final int MAX_PINNED_CONTACTS = 2;
+    /**
+     * Emergency numbers the user can choose from in the settings (Brazil first, 112 as fallback).
+     * Must stay in the same order as {@link #EMERGENCY_NUMBER_LABELS}.
+     */
+    public static final String[] EMERGENCY_NUMBERS = {"192", "193", "190", "112"};
+    @StringRes
+    public static final int[] EMERGENCY_NUMBER_LABELS = {
+            R.string.emergency_samu,
+            R.string.emergency_firefighters,
+            R.string.emergency_police,
+            R.string.emergency_international
+    };
     private BaldLinearLayoutButton[] ec;
     private BaldLinearLayoutButton ecReal;
 
@@ -84,11 +98,26 @@ public class SOSActivity extends BaldActivity {
                 ec[i].setOnClickListener(addContactListener);
         }
 
-        ecReal.setOnClickListener((v) -> callEmergencyNumber());
+        final String emergencyNumber = getEmergencyNumber(this);
+        ((TextView) findViewById(R.id.tv_ec_real)).setText(getEmergencyLabel(this, emergencyNumber));
+        ecReal.setOnClickListener((v) -> DialerActivity.call(emergencyNumber, this, true));
     }
 
-    private void callEmergencyNumber() {
-        DialerActivity.call("112", this, true);//should work 99.99% of the times
+    public static String getEmergencyNumber(Context context) {
+        final String number = BPrefs.get(context).getString(BPrefs.EMERGENCY_NUMBER_KEY, BPrefs.EMERGENCY_NUMBER_DEFAULT_VALUE);
+        return emergencyNumberIndex(number) == -1 ? BPrefs.EMERGENCY_NUMBER_DEFAULT_VALUE : number;
+    }
+
+    public static int emergencyNumberIndex(String number) {
+        for (int i = 0; i < EMERGENCY_NUMBERS.length; i++)
+            if (EMERGENCY_NUMBERS[i].equals(number))
+                return i;
+        return -1;
+    }
+
+    private static CharSequence getEmergencyLabel(Context context, String number) {
+        final int index = emergencyNumberIndex(number);
+        return index == -1 ? context.getString(R.string.emergency_services) : context.getString(EMERGENCY_NUMBER_LABELS[index]);
     }
 
     @Override

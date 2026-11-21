@@ -194,6 +194,17 @@ public class SettingsActivity extends BaldActivity {
                         })
                         .setOptionsStartingIndex(() -> sharedPreferences.getBoolean(BPrefs.EMERGENCY_BUTTON_VISIBLE_KEY, BPrefs.EMERGENCY_BUTTON_VISIBLE_DEFAULT_VALUE) ? 0 : 1),
                         R.drawable.emergency_on_button));
+        personalizationCategory.add(
+                new BDBSettingsItem(R.string.emergency_number, BDB.from(this)
+                        .addFlag(BDialog.FLAG_OK | BDialog.FLAG_CANCEL).setTitle(R.string.emergency_number)
+                        .setSubText(R.string.emergency_number_subtext)
+                        .setOptions(SOSActivity.EMERGENCY_NUMBER_LABELS)
+                        .setPositiveButtonListener(params -> {
+                            editor.putString(BPrefs.EMERGENCY_NUMBER_KEY, SOSActivity.EMERGENCY_NUMBERS[(Integer) params[0]]).apply();
+                            return true;
+                        })
+                        .setOptionsStartingIndex(() -> SOSActivity.emergencyNumberIndex(SOSActivity.getEmergencyNumber(this))),
+                        R.drawable.emergency_on_button));
         personalizationCategory.add(new RunnableSettingsItem(R.string.time_changer, v -> startActivity(new Intent(this, PillTimeSetterActivity.class)), R.drawable.pill));
         personalizationCategory.add(new RunnableSettingsItem(R.string.edit_home_screen, v -> startActivity(new Intent(this, Page1EditorActivity.class)), R.drawable.edit_on_button));
 
@@ -416,19 +427,6 @@ public class SettingsActivity extends BaldActivity {
                             v -> startActivity(new Intent(this, PermissionActivity.class)),
                             R.drawable.grant_all_permissions_on_button)
             );
-        mainCategory.add(
-                new BDBSettingsItem(R.string.crash_reports,
-                        BDB.from(this)
-                                .addFlag(BDialog.FLAG_OK | BDialog.FLAG_CANCEL).setTitle(R.string.crash_reports)
-                                .setSubText(R.string.crash_reports_subtext)
-                                .setOptions(R.string.on, R.string.off)
-                                .setPositiveButtonListener(params -> {
-                                    editor.putBoolean(BPrefs.CRASH_REPORTS_KEY, params[0].equals(0)).apply();
-                                    this.recreate();
-                                    return true;
-                                })
-                                .setOptionsStartingIndex(() -> sharedPreferences.getBoolean(BPrefs.CRASH_REPORTS_KEY, BPrefs.CRASH_REPORTS_DEFAULT_VALUE) ? 0 : 1),
-                        R.drawable.upload_on_button));
         if (BuildConfig.FLAVOR.equals("baldUpdates"))
             mainCategory.add(
                     new RunnableSettingsItem(R.string.check_for_updates,

@@ -70,6 +70,9 @@ public final class BPrefs {
     public static final String EMERGENCY_BUTTON_VISIBLE_KEY = "EMERGENCY_BUTTON_VISIBLE_KEY";
     public static final boolean EMERGENCY_BUTTON_VISIBLE_DEFAULT_VALUE = true;
 
+    public static final String EMERGENCY_NUMBER_KEY = "EMERGENCY_NUMBER_KEY";
+    public static final String EMERGENCY_NUMBER_DEFAULT_VALUE = "192"; // SAMU (Brazil)
+
     public static final String LOW_BATTERY_ALERT_KEY = "LOW_BATTERY_ALERT_KEY";
     public static final boolean LOW_BATTERY_ALERT_DEFAULT_VALUE = true;
 
@@ -91,7 +94,7 @@ public final class BPrefs {
     public static final boolean USE_ACCIDENTAL_GUARD_DEFAULT_VALUE = true;
 
     public static final String CRASH_REPORTS_KEY = "CRASH_REPORTS_KEY";
-    public static final boolean CRASH_REPORTS_DEFAULT_VALUE = true;
+    public static final boolean CRASH_REPORTS_DEFAULT_VALUE = false;
 
     public static final String APPS_ONE_GRID_KEY = "APPS_ONE_GRID_KEY";
     public static final boolean APPS_ONE_GRID_DEFAULT_VALUE = false;

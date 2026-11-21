@@ -406,6 +406,12 @@
 
     <string name="mail_application_not_found">Mail application not found!</string>
     <string name="get_involved">Get Involved</string>
+    <string name="emergency_number">Emergency Number</string>
+    <string name="emergency_number_subtext">Choose which number the emergency button on the SOS screen calls.</string>
+    <string name="emergency_samu">Ambulance (SAMU) - 192</string>
+    <string name="emergency_firefighters">Firefighters - 193</string>
+    <string name="emergency_police">Police - 190</string>
+    <string name="emergency_international">International emergency - 112</string>
 
     <string-array name="names_for_screenshots">
         <item>The Godfather</item>
