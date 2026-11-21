@@ -27,10 +27,9 @@ Use sempre um número **maior** que o da última versão, no formato `vX.Y.Z`
 
 **Pelo site do GitHub** (mais fácil):
 
-1. Abra o repositório e clique em **Releases** > **Draft a new release** (ou "Create a new release").
-2. Em **Choose a tag**, digite o número novo (por exemplo `v1.0.1`) e clique em "Create new tag".
-3. Clique em **Publish release**.
-4. Em uns 10 minutos, o arquivo `vophone-v1.0.1.apk` aparece na versão (aba **Actions** mostra o andamento).
+1. Abra o repositório, aba **Actions** > **Release** (na lista da esquerda) > botão **Run workflow**.
+2. Digite a versão nova sem o "v" (por exemplo `1.0.1`) e clique em **Run workflow**.
+3. Em uns 5 a 10 minutos aparece a versão `v1.0.1` na aba **Releases**, com o arquivo `vophone-v1.0.1.apk`.
 
 **Pelo terminal:**
 
