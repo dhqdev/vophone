@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  vophone is a privileged app in the vophone ROM. The only privileged permission it uses:
+  INSTALL_PACKAGES, so it updates itself from the GitHub releases without a confirmation screen.
+  -->
+<permissions>
+    <privapp-permissions package="com.bald.uriah.baldphone">
+        <permission name="android.permission.INSTALL_PACKAGES" />
+    </privapp-permissions>
+</permissions>

@@ -125,8 +125,10 @@ vophone > Configurações > Modo quiosque. Detalhes em `docs/INSTALACAO.md`.
 
 ## Atualizar o vophone depois
 
-Não precisa gravar o sistema de novo: compile o APK novo e rode `adb install -r vophone-debug.apk`.
-Ele é assinado com a mesma chave (`app/vophone-debug.keystore`) do vophone embutido no sistema.
+Não precisa gravar o sistema de novo: o vophone do sistema se atualiza sozinho, sem perguntar, quando sai
+uma versão nova no GitHub (veja `docs/ATUALIZACOES.md`). As versões são assinadas com a mesma chave
+(`app/vophone-debug.keystore`) do vophone embutido no sistema.
+Para instalar um APK feito no computador: `adb install -r -d vophone-debug.apk`.
 
 ## Voltar ao sistema original
 

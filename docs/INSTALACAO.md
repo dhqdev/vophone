@@ -113,10 +113,14 @@ Com o quiosque ligado:
 
 ## Atualizar o vophone
 
-Gere o APK novo e rode de novo:
+O vophone se atualiza sozinho quando sai uma versão nova no GitHub (a cada 6 horas, no Wi-Fi).
+Para procurar na hora: vophone > Configurações > **Procurar atualizações**.
+Como publicar uma versão: [ATUALIZACOES.md](ATUALIZACOES.md).
+
+Para instalar um APK feito no computador:
 
 ```
-adb install -r vophone-debug.apk
+adb install -r -d vophone-debug.apk
 ```
 
 O APK é assinado com a chave fixa `app/vophone-debug.keystore`, então qualquer build deste

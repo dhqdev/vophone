@@ -18,14 +18,28 @@
 apply plugin: 'com.android.application'
 
 
+// vophone version: comes from the git tag when GitHub builds a release (tag v1.2.3 -> -PvophoneVersion=1.2.3,
+// see .github/workflows/release.yml). versionCode = 1000000 + major*10000 + minor*100 + patch, the same formula
+// as GithubUpdater.versionCodeOf, so every release is newer than the one before (and than local builds).
+def vophoneVersion = project.findProperty('vophoneVersion')
+def vophoneVersionCode = { String version ->
+    def match = version =~ /^(\d+)\.(\d+)\.(\d+)$/
+    if (!match.matches() || match.group(2).toInteger() > 99 || match.group(3).toInteger() > 99)
+        throw new GradleException("vophone version must look like 1.2.3 (minor and patch up to 99), got: " + version)
+    return 1000000 + match.group(1).toInteger() * 10000 + match.group(2).toInteger() * 100 + match.group(3).toInteger()
+}
+
 android {
     compileSdkVersion 31
     defaultConfig {
         applicationId "com.bald.uriah.baldphone"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 103
-        versionName "14.0.0"
+        // Local builds: 103 (older than any GitHub release, so the phone takes the next release).
+        versionCode vophoneVersion ? vophoneVersionCode(vophoneVersion) : 103
+        versionName vophoneVersion ?: "0.0.0-local"
+        // GitHub repository whose releases update vophone (utils/GithubUpdater.java)
+        buildConfigField "String", "UPDATE_REPO", "\"dhqdev/vophone\""
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         manifestPlaceholders = [fullApp: "true", notFullApp: "false", recentCalls: "true", notRecentCalls: "false"]
 

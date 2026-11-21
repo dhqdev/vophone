@@ -12,6 +12,8 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGE_OVERLAYS += \
     vendor/vophone/overlay
 
-# vophone's runtime permissions are granted on first boot (no permission screens for the user)
+# vophone's runtime permissions are granted on first boot (no permission screens for the user),
+# and its one privileged permission (installing its own updates) is allowed
 PRODUCT_COPY_FILES += \
-    vendor/vophone/default-permissions-vophone.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/default-permissions/default-permissions-vophone.xml
+    vendor/vophone/default-permissions-vophone.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/default-permissions/default-permissions-vophone.xml \
+    vendor/vophone/privapp-permissions-vophone.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/permissions/privapp-permissions-vophone.xml

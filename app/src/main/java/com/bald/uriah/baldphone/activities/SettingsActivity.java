@@ -63,7 +63,7 @@ import com.bald.uriah.baldphone.utils.CallManager;
 import com.bald.uriah.baldphone.utils.KioskManager;
 import com.bald.uriah.baldphone.utils.D;
 import com.bald.uriah.baldphone.utils.S;
-import com.bald.uriah.baldphone.utils.UpdatingUtil;
+import com.bald.uriah.baldphone.utils.GithubUpdater;
 import com.bald.uriah.baldphone.views.BaldTitleBar;
 import com.bald.uriah.baldphone.views.ModularRecyclerView;
 import com.bumptech.glide.Glide;
@@ -481,12 +481,12 @@ public class SettingsActivity extends BaldActivity {
                             v -> startActivity(new Intent(this, PermissionActivity.class)),
                             R.drawable.grant_all_permissions_on_button)
             );
-        if (BuildConfig.FLAVOR.equals("baldUpdates"))
-            mainCategory.add(
-                    new RunnableSettingsItem(R.string.check_for_updates,
-                            v -> UpdatingUtil.checkForUpdates(this, true),
-                            R.drawable.updates_on_button)
-            );
+        // vophone: new versions come from the GitHub releases (see GithubUpdater)
+        mainCategory.add(
+                new RunnableSettingsItem(R.string.check_for_updates,
+                        v -> GithubUpdater.check(this, true),
+                        R.drawable.updates_on_button)
+        );
     }
 
     /**

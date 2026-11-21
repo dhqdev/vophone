@@ -441,4 +441,8 @@
     <string name="tile_recent_calls">Últimas ligações</string>
     <string name="no_app_store">Este celular não tem loja de aplicativos.</string>
     <string name="home_date_pattern">d \'de\' MMMM</string>
+    <!-- vophone updates from GitHub releases -->
+    <string name="update_checking">Procurando versão nova do vophone…</string>
+    <string name="update_already_running">O vophone já está se atualizando…</string>
+    <string name="update_failed">Não deu para atualizar o vophone agora. Ele tenta de novo mais tarde.</string>
 </resources>

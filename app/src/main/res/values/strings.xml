@@ -465,4 +465,8 @@
     <string name="tile_recent_calls">Recent calls</string>
     <string name="no_app_store">There is no app store on this phone.</string>
     <string name="home_date_pattern">MMMM d</string>
+    <!-- vophone updates from GitHub releases -->
+    <string name="update_checking">Looking for a new version of vophone…</string>
+    <string name="update_already_running">Already updating vophone…</string>
+    <string name="update_failed">Could not update vophone now. It will try again later.</string>
 </resources>

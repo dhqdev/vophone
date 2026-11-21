@@ -18,7 +18,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission
-            android:name="android.permission.REQUEST_INSTALL_PACKAGES"
-            tools:node="remove"/>
+    <!-- vophone keeps REQUEST_INSTALL_PACKAGES (removed in the original F-Droid build):
+         it installs its own updates from the GitHub releases. -->
 </manifest>

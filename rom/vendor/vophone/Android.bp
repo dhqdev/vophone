@@ -7,6 +7,9 @@ android_app_import {
     // `adb install -r` updates of vophone keep working on the installed system.
     presigned: true,
     product_specific: true,
+    // Privileged, with INSTALL_PACKAGES (privapp-permissions-vophone.xml): vophone installs its own
+    // updates from the GitHub releases without asking (utils/GithubUpdater.java).
+    privileged: true,
     dex_preopt: {
         enabled: false,
     },

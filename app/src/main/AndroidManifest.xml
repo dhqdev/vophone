@@ -35,6 +35,10 @@
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+    <!-- Only granted when vophone is built into the vophone ROM (privileged app): updates install without asking -->
+    <uses-permission
+        android:name="android.permission.INSTALL_PACKAGES"
+        tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" />
     <uses-permission android:name="android.permission.WRITE_CALL_LOG" />
     <uses-permission android:name="android.permission.READ_CALL_LOG" />
@@ -350,6 +354,10 @@
                 <action android:name="com.bald.uriah.baldphone.action.REMOVE_DEVICE_OWNER" />
             </intent-filter>
         </receiver>
+        <!-- Result of installing a vophone update downloaded from GitHub (utils/GithubUpdater.java) -->
+        <receiver
+            android:name=".broadcast_receivers.UpdateInstallReceiver"
+            android:exported="false" />
         <receiver
             android:name=".broadcast_receivers.BootUpBroadcastReceiver"
             android:enabled="${fullApp}">
