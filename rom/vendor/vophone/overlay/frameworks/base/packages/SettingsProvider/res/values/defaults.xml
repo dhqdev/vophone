@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Screen stays on for 2 minutes -->
+    <integer name="def_screen_off_timeout">120000</integer>
+    <!-- No swipe-to-unlock screen: pressing the power button goes straight to vophone.
+         vophone's accidental-touch guard protects against pocket touches. Remove this line to keep the lock screen. -->
+    <bool name="def_lockscreen_disabled">true</bool>
+</resources>

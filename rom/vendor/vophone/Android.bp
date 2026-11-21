@@ -1,0 +1,20 @@
+// vophone built into the system image as the phone's whole interface:
+// it replaces the stock home screen (Launcher3 / Trebuchet) and the stock phone app (Dialer).
+android_app_import {
+    name: "Vophone",
+    apk: "prebuilt/vophone.apk",
+    // Keep vophone's own signing key (app/vophone-debug.keystore), so later
+    // `adb install -r` updates of vophone keep working on the installed system.
+    presigned: true,
+    product_specific: true,
+    dex_preopt: {
+        enabled: false,
+    },
+    overrides: [
+        "Launcher3",
+        "Launcher3QuickStep",
+        "Trebuchet",
+        "TrebuchetQuickStep",
+        "Dialer",
+    ],
+}

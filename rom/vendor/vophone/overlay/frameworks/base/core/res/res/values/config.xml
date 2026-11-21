@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- vophone is the default (and system) phone app: its big-button call screen handles every call,
+         and it may place emergency calls directly. Android 10 or newer. -->
+    <string name="config_defaultDialer" translatable="false">com.bald.uriah.baldphone</string>
+</resources>

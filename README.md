@@ -3,7 +3,11 @@
 Fork do [BaldPhone](https://github.com/UriahShaulMandel/BaldPhone) adaptado para o Brasil e para usar o celular inteiro:
 tela inicial simples, tela de ligação com botões grandes, SOS ligando para o 192 e modo quiosque.
 
-**Como instalar no celular: [docs/INSTALACAO.md](docs/INSTALACAO.md)**
+Duas formas de usar:
+
+- **Sistema operacional completo (ROM):** o sistema do fabricante é trocado por um sistema limpo
+  (LineageOS) com o vophone embutido como tela inicial e telefone. Guia: [rom/README.md](rom/README.md)
+- **Aplicativo no Android que já está no celular**, com modo quiosque: [docs/INSTALACAO.md](docs/INSTALACAO.md)
 
 Compilar: `./gradlew assembleFDroidDebug` (JDK 11, Android SDK 31).
 

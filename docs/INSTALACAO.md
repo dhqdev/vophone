@@ -5,6 +5,7 @@ tela inicial simples, tela de ligação com botões grandes e modo quiosque
 (a pessoa não consegue sair do vophone nem mexer nas configurações do Android).
 
 Nada disso grava um sistema novo no celular: tudo pode ser desfeito.
+Para trocar o sistema do celular inteiro pelo sistema vophone, veja [../rom/README.md](../rom/README.md).
 
 ## Do que você precisa
 

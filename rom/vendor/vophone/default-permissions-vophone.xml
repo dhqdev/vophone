@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Runtime permissions granted to vophone on first boot. -->
+<exceptions>
+    <exception package="com.bald.uriah.baldphone">
+        <permission name="android.permission.READ_CONTACTS" fixed="false" />
+        <permission name="android.permission.WRITE_CONTACTS" fixed="false" />
+        <permission name="android.permission.CALL_PHONE" fixed="false" />
+        <permission name="android.permission.READ_PHONE_STATE" fixed="false" />
+        <permission name="android.permission.READ_CALL_LOG" fixed="false" />
+        <permission name="android.permission.WRITE_CALL_LOG" fixed="false" />
+        <permission name="android.permission.CAMERA" fixed="false" />
+        <permission name="android.permission.WRITE_EXTERNAL_STORAGE" fixed="false" />
+    </exception>
+</exceptions>
