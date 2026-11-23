@@ -376,6 +376,7 @@
     <string name="read_phone_state_subtext">Essa permissão é necessária para realizar chamadas a partir do segundo SIM</string>
     <string name="choose_sim">Escolher SIM</string>
     <string name="choose_sim_subtext">Escolha o SIM que você deseja realizar a chamada</string>
+    <string name="type_a_number_first">Digite o número primeiro</string>
     <string name="website">Site</string>
     <string name="appear_on_top">Aparecer sobre outros</string>
     <string name="appear_on_top_subtext">Essa permissão é necessária em novas versões do Android para mostrar alarmes e lembretes quando a tela estiver desligada</string>

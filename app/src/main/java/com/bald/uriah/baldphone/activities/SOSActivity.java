@@ -16,27 +16,35 @@
 
 package com.bald.uriah.baldphone.activities;
 
+import android.Manifest;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
+import androidx.core.app.ActivityCompat;
 
 import com.bald.uriah.baldphone.R;
 import com.bald.uriah.baldphone.activities.contacts.ContactsActivity;
 import com.bald.uriah.baldphone.adapters.ContactRecyclerViewAdapter;
+import com.bald.uriah.baldphone.databases.contacts.Contact;
 import com.bald.uriah.baldphone.databases.contacts.MiniContact;
 import com.bald.uriah.baldphone.databases.home_screen_pins.HomeScreenPinHelper;
 import com.bald.uriah.baldphone.utils.BPrefs;
+import com.bald.uriah.baldphone.utils.BaldToast;
 import com.bald.uriah.baldphone.views.BaldLinearLayoutButton;
 
 import java.util.ArrayList;
@@ -47,8 +55,17 @@ import java.util.Set;
 
 import static com.bald.uriah.baldphone.databases.home_screen_pins.HomeScreenPinHelper.SHARED_PREFS_KEY;
 
+/**
+ * SOS screen: the two emergency contacts and the emergency number.
+ * It opens without asking for any permission first: in an emergency the big button must work at once.
+ * If calling was never allowed, pressing a button asks for that one permission and then calls.
+ */
 public class SOSActivity extends BaldActivity {
+    private static final String TAG = SOSActivity.class.getSimpleName();
     private static final int MAX_PINNED_CONTACTS = 2;
+    private static final int REQUEST_CALL_PERMISSION = 7192;
+    @Nullable
+    private String pendingNumber;
     /**
      * Emergency numbers the user can choose from in the settings (Brazil first, 112 as fallback).
      * Must stay in the same order as {@link #EMERGENCY_NUMBER_LABELS}.
@@ -74,14 +91,64 @@ public class SOSActivity extends BaldActivity {
     private BaldLinearLayoutButton[] ec;
     private BaldLinearLayoutButton ecReal;
 
-    private static void setupEC(BaldLinearLayoutButton baldLinearLayoutButton, MiniContact miniContact) {
+    private void setupEC(BaldLinearLayoutButton baldLinearLayoutButton, MiniContact miniContact) {
         if (miniContact.photo != null)
             ((ImageView) baldLinearLayoutButton.getChildAt(0)).setImageURI(Uri.parse(miniContact.photo));
         else
             ((ImageView) baldLinearLayoutButton.getChildAt(0)).setImageResource(R.drawable.face_on_button);
 
         ((TextView) baldLinearLayoutButton.getChildAt(1)).setText(miniContact.name);
-        baldLinearLayoutButton.setOnClickListener(v -> DialerActivity.call(miniContact, v.getContext()));
+        baldLinearLayoutButton.setOnClickListener(v -> {
+            try {
+                callNow(Contact.fromLookupKey(miniContact.lookupKey, getContentResolver()).getPhoneList().get(0).second.toString());
+            } catch (Exception e) { // the contact has no number anymore
+                Log.e(TAG, "could not get the number of " + miniContact.name, e);
+                BaldToast.error(this);
+            }
+        });
+    }
+
+    /**
+     * Calls right away (no SIM question); asks for the call permission first if it was never given.
+     */
+    private void callNow(String number) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
+            DialerActivity.call(number, this, true);
+        } else {
+            pendingNumber = number;
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CALL_PHONE}, REQUEST_CALL_PERMISSION);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode != REQUEST_CALL_PERMISSION || pendingNumber == null)
+            return;
+        final String number = pendingNumber;
+        pendingNumber = null;
+        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+            DialerActivity.call(number, this, true);
+        else
+            dialWithAnotherApp(number);
+    }
+
+    /**
+     * Calling is not allowed for vophone: open another phone app with the number typed in, so one tap calls.
+     */
+    private void dialWithAnotherApp(String number) {
+        final Intent dial = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + number));
+        for (final ResolveInfo resolveInfo : getPackageManager().queryIntentActivities(dial, PackageManager.MATCH_DEFAULT_ONLY)) {
+            if (resolveInfo.activityInfo != null && !getPackageName().equals(resolveInfo.activityInfo.packageName)) {
+                try {
+                    startActivity(dial.setClassName(resolveInfo.activityInfo.packageName, resolveInfo.activityInfo.name));
+                    return;
+                } catch (Exception e) {
+                    Log.e(TAG, "could not open " + resolveInfo.activityInfo.packageName, e);
+                }
+            }
+        }
+        BaldToast.error(this);
     }
 
     @Override
@@ -99,7 +166,10 @@ public class SOSActivity extends BaldActivity {
     protected void onStart() {
         super.onStart();
         final View.OnClickListener addContactListener = v -> startActivity(new Intent(v.getContext().getApplicationContext(), ContactsActivity.class).putExtra(ContactsActivity.INTENT_EXTRA_CONTACT_ADAPTER_MODE, ContactRecyclerViewAdapter.MODE_SOS));
-        final List<MiniContact> miniContacts = PinHelper.getAllPinnedContacts(this);
+        // Without the contacts permission the two buttons stay "Add", which asks for it.
+        final List<MiniContact> miniContacts =
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED
+                        ? PinHelper.getAllPinnedContacts(this) : null;
         final int size = miniContacts == null ? 0 : miniContacts.size();
         for (int i = 0; i < MAX_PINNED_CONTACTS; i++) {
             if (size > i)
@@ -110,7 +180,7 @@ public class SOSActivity extends BaldActivity {
 
         final String emergencyNumber = getEmergencyNumber(this);
         ((TextView) findViewById(R.id.tv_ec_real)).setText(getEmergencyLabel(this, emergencyNumber));
-        ecReal.setOnClickListener((v) -> DialerActivity.call(emergencyNumber, this, true));
+        ecReal.setOnClickListener((v) -> callNow(emergencyNumber));
     }
 
     public static String getEmergencyNumber(Context context) {
@@ -216,6 +286,6 @@ public class SOSActivity extends BaldActivity {
 
     @Override
     protected int requiredPermissions() {
-        return PERMISSION_CALL_PHONE | PERMISSION_READ_CONTACTS;
+        return PERMISSION_NONE; // see the class comment
     }
 }

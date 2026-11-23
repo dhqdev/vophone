@@ -26,12 +26,11 @@ import android.database.Cursor;
 import android.media.ToneGenerator;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.provider.ContactsContract;
+import android.telecom.PhoneAccount;
 import android.telecom.PhoneAccountHandle;
 import android.telecom.TelecomManager;
-import android.telephony.SubscriptionInfo;
-import android.telephony.SubscriptionManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -53,6 +52,7 @@ import com.bald.uriah.baldphone.utils.BPrefs;
 import com.bald.uriah.baldphone.utils.BaldToast;
 import com.bald.uriah.baldphone.utils.D;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static android.media.AudioManager.STREAM_SYSTEM;
@@ -77,59 +77,83 @@ public class DialerActivity extends BaldActivity {
     private StringBuilder number = new StringBuilder();
     private boolean playDialSounds;
 
-    @SuppressLint("NewApi")
-    public static void call(final CharSequence number, final Context context, SubscriptionInfo subscriptionInfo) {
-        try {
-            if (subscriptionInfo == null) {
-                context.startActivity(new Intent(Intent.ACTION_CALL).setData(Uri.parse(("tel:" + number).replace("#", Uri.encode("#")))));
-            } else {
-                final TelecomManager telecomManager = (TelecomManager) context.getSystemService(Context.TELECOM_SERVICE);
-                final List<PhoneAccountHandle> list = telecomManager.getCallCapablePhoneAccounts();
-                for (final PhoneAccountHandle phoneAccountHandle : list) {
-                    if (phoneAccountHandle.getId().contains(subscriptionInfo.getIccId())) {
-                        context.startActivity(new Intent(Intent.ACTION_CALL).setData(Uri.parse(("tel:" + number).replace("#", Uri.encode("#"))))
-                                .putExtra("android.telecom.extra.PHONE_ACCOUNT_HANDLE", (Parcelable) phoneAccountHandle));
-                        return;
-                    }
-                }
-                BaldToast.error(context);
+    private static Uri telUri(final CharSequence number) {
+        return Uri.parse(("tel:" + number).replace("#", Uri.encode("#")));
+    }
 
+    /**
+     * @param phoneAccount the SIM to call from, or null for the phone's default.
+     */
+    public static void call(final CharSequence number, final Context context, @Nullable PhoneAccountHandle phoneAccount) {
+        final Intent intent = new Intent(Intent.ACTION_CALL).setData(telUri(number));
+        if (phoneAccount != null)
+            intent.putExtra(TelecomManager.EXTRA_PHONE_ACCOUNT_HANDLE, phoneAccount);
+        try {
+            context.startActivity(intent);
+        } catch (Exception e) { // no permission anymore, or nothing can make calls
+            Log.e(TAG, "could not call", e);
+            BaldToast.error(context);
+        }
+    }
+
+    /**
+     * The SIMs that can make calls (empty if that cannot be known).
+     * Phone accounts are what Android itself uses to pick the SIM, so this works on every Android version
+     * (matching SubscriptionInfo.getIccId() does not: since Android 10 it is empty for normal apps).
+     */
+    @SuppressLint("MissingPermission")
+    private static List<PhoneAccountHandle> callCapableSims(final Context context) {
+        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.M)
+            return new ArrayList<>();
+        try {
+            final TelecomManager telecomManager = (TelecomManager) context.getSystemService(Context.TELECOM_SERVICE);
+            if (telecomManager != null) {
+                final List<PhoneAccountHandle> accounts = telecomManager.getCallCapablePhoneAccounts();
+                if (accounts != null)
+                    return accounts;
             }
         } catch (SecurityException e) {
-            Log.e(TAG, e.getMessage());
-            e.printStackTrace();
-            throw new RuntimeException(e);
+            Log.e(TAG, "no permission to list the SIMs", e);
         }
+        return new ArrayList<>();
+    }
 
+    private static CharSequence simName(final Context context, final PhoneAccountHandle handle, final int index) {
+        final TelecomManager telecomManager = (TelecomManager) context.getSystemService(Context.TELECOM_SERVICE);
+        final PhoneAccount account = telecomManager == null ? null : telecomManager.getPhoneAccount(handle);
+        final CharSequence label = account == null ? null : account.getLabel();
+        final CharSequence sim = "SIM " + (index + 1);
+        return TextUtils.isEmpty(label) ? sim : sim + " - " + label;
     }
 
     public static void call(final CharSequence number, final Context context, final boolean directly) {
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1 && !directly && BPrefs.get(context).getBoolean(BPrefs.DUAL_SIM_KEY, BPrefs.DUAL_SIM_DEFAULT_VALUE)) {
-                final SubscriptionManager subscriptionManager = (SubscriptionManager) context
-                        .getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
-                final List<SubscriptionInfo> activeSubscriptionInfoList = subscriptionManager.getActiveSubscriptionInfoList();
-                if (activeSubscriptionInfoList != null && (activeSubscriptionInfoList.size() > 1)) {
-                    final CharSequence[] simNames = new CharSequence[activeSubscriptionInfoList.size()];
-                    for (int i = 0; i < activeSubscriptionInfoList.size(); i++) {
-                        simNames[i] = activeSubscriptionInfoList.get(i).getDisplayName();
-                    }
-                    BDB.from(context)
-                            .addFlag(BDialog.FLAG_OK | BDialog.FLAG_CANCEL)
-                            .setTitle(R.string.choose_sim)
-                            .setSubText(R.string.choose_sim_subtext)
-                            .setOptions(simNames)
-                            .setPositiveButtonListener(params -> {
-                                call(number, context, activeSubscriptionInfoList.get((Integer) params[0]));
-                                return true;
-                            }).show();
-                } else
-                    call(number, context, null);
-            } else
-                call(number, context, null);
-        } else
+        if (TextUtils.isEmpty(number)) {
+            BaldToast.from(context).setType(BaldToast.TYPE_ERROR).setText(R.string.type_a_number_first).show();
+            return;
+        }
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
             BaldToast.error(context);
-
+            return;
+        }
+        if (!directly && BPrefs.get(context).getBoolean(BPrefs.DUAL_SIM_KEY, BPrefs.DUAL_SIM_DEFAULT_VALUE)) {
+            final List<PhoneAccountHandle> sims = callCapableSims(context);
+            if (sims.size() > 1) {
+                final CharSequence[] simNames = new CharSequence[sims.size()];
+                for (int i = 0; i < sims.size(); i++)
+                    simNames[i] = simName(context, sims.get(i), i);
+                BDB.from(context)
+                        .addFlag(BDialog.FLAG_OK | BDialog.FLAG_CANCEL)
+                        .setTitle(R.string.choose_sim)
+                        .setSubText(R.string.choose_sim_subtext)
+                        .setOptions(simNames)
+                        .setPositiveButtonListener(params -> {
+                            call(number, context, sims.get((Integer) params[0]));
+                            return true;
+                        }).show();
+                return;
+            }
+        }
+        call(number, context, (PhoneAccountHandle) null);
     }
 
     public static void call(final MiniContact miniContact, final Context context) {
