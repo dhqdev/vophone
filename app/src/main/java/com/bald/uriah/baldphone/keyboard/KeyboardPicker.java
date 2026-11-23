@@ -34,6 +34,7 @@ public class KeyboardPicker extends FrameLayout {
         super(baldInputMethodService);
         final ContextThemeWrapper contextThemeWrapper = new ContextThemeWrapper(baldInputMethodService, S.getTheme(baldInputMethodService));
         final ConstraintLayout picker = (ConstraintLayout) LayoutInflater.from(contextThemeWrapper).inflate(R.layout.keyboard_language_picker, this, false);
+        picker.findViewById(R.id.bt_portuguese).setOnClickListener(v -> baldInputMethodService.changeLanguage(PortugueseKeyboard.LANGUAGE_ID));
         picker.findViewById(R.id.bt_hebrew).setOnClickListener(v -> baldInputMethodService.changeLanguage(HebrewKeyboard.LANGUAGE_ID));
         picker.findViewById(R.id.bt_english).setOnClickListener(v -> baldInputMethodService.changeLanguage(EnglishKeyboard.LANGUAGE_ID));
         addView(picker);

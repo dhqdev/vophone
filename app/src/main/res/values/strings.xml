@@ -343,6 +343,7 @@
     <string name="choose_language_for_keyboard">Choose Language</string>
     <string name="hebrew">Hebrew</string>
     <string name="english">English</string>
+    <string name="portuguese">Portuguese</string>
 
     <string name="search">Search</string>
     <string name="next">Next</string>

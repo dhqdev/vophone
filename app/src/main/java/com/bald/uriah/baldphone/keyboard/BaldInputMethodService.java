@@ -41,7 +41,8 @@ import java.util.List;
 public class BaldInputMethodService extends InputMethodService implements View.OnClickListener {//} implements KeyboardView.OnKeyboardActionListener {
     private static final String TAG = BaldInputMethodService.class.getSimpleName();
     public static final String VOICE_RECOGNITION_IMS = "com.google.android.googlequicksearchbox/com.google.android.voicesearch.ime.VoiceInputMethodService";
-    private static int lastLanguage = KeyboardPicker.LANGUAGE_ID;
+    // vophone: opens in Portuguese, instead of asking for a language every time the keyboard restarts
+    private static int lastLanguage = PortugueseKeyboard.LANGUAGE_ID;
     private boolean onNumbers = false;
     private BaldPrefsUtils baldPrefsUtils;
     private FrameLayout keyboardFrame;

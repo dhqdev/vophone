@@ -30,10 +30,24 @@
         android:layout_marginEnd="8dp"
         android:gravity="center"
         android:text="@string/choose_language_for_keyboard"
-        app:layout_constraintBottom_toTopOf="@id/bt_hebrew"
+        app:layout_constraintBottom_toTopOf="@id/bt_portuguese"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <com.bald.uriah.baldphone.views.BaldButton
+        android:id="@+id/bt_portuguese"
+        style="@style/ButtonsText.Huge"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="8dp"
+        android:background="@drawable/style_for_buttons"
+        android:text="@string/portuguese"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="1"
+        app:layout_constraintEnd_toStartOf="@+id/bt_hebrew"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_title" />
 
     <com.bald.uriah.baldphone.views.BaldButton
         android:id="@+id/bt_hebrew"
@@ -46,7 +60,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintDimensionRatio="1"
         app:layout_constraintEnd_toStartOf="@+id/bt_english"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/bt_portuguese"
         app:layout_constraintTop_toBottomOf="@id/tv_title" />
 
     <com.bald.uriah.baldphone.views.BaldButton

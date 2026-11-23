@@ -96,8 +96,10 @@ public abstract class BaldKeyboard extends FrameLayout {
                 return new EnglishKeyboard(context, onClickListener, backspaceRunnable, imeOptions);
             case NumberKeyboard.LANGUAGE_ID:
                 return new NumberKeyboard(context, onClickListener, backspaceRunnable, imeOptions);
+            case PortugueseKeyboard.LANGUAGE_ID:
+                return new PortugueseKeyboard(context, onClickListener, backspaceRunnable, imeOptions);
             default:
-                throw new IllegalArgumentException("language must be 0/1/2, it is currently:" + language);
+                throw new IllegalArgumentException("language must be 0/1/2/3, it is currently:" + language);
         }
 
     }

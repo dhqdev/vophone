@@ -61,7 +61,7 @@ public class EnglishKeyboard extends BaldKeyboard implements BaldKeyboard.Capita
 
     @Override
     int nextLanguage() {
-        return HebrewKeyboard.LANGUAGE_ID;
+        return PortugueseKeyboard.LANGUAGE_ID; // vophone: Portuguese <-> English, Hebrew only from the picker
     }
 
     @Override
