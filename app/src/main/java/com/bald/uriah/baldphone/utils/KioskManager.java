@@ -66,6 +66,7 @@ public final class KioskManager {
             Manifest.permission.WRITE_CALL_LOG,
             Manifest.permission.CAMERA,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            "android.permission.POST_NOTIFICATIONS", // Android 13+: alarm notifications (ignored before)
     };
 
     private KioskManager() {
