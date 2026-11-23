@@ -16,10 +16,6 @@
 
 <resources>
     <string name="about">O aplikaci</string>
-    <string name="about_subtext">Ahoj!\nJmenuji se Uriah Shaul Mandel a jsem vývojář této platformy.\n
-        Většinu svého \"dospělého\" života jsem strávit tvorbou této platformy a rozhodl jsem se ji vydat zadarmo, a to pro
-        všechny.\nJste více než vítáni kontaktovat mě na email:\nbaldphone.contact@gmail.com
-    </string>
     <string name="accessibility_level">Úroveň přistupnosti</string>
     <string name="accessibility_settings">Přístupnost</string>
     <string name="accidental_touches">Ochrana proti nechtěnému dotyku</string>
@@ -229,13 +225,6 @@
     <string name="settings">Nastavení</string>
     <string name="settings_permission">Nastavení oprávnění</string>
     <string name="share">Sdílet</string>
-    <string name="share_actual_text">Ahoj, používám platformu BaldPhone, která nahrazuje rozhraní telefonu
-        za jedno, co je velké a jednoduché. Zaujalo vás to? Lze stáhnou zadarmo! Podívej se na odkaz
-        :\n\nhttps://baldphone.com
-    </string>
-    <string name="share_bald_phone_subtext">Hej, víš o někom, kdo by chtěl používat BaldPhone?\nMůžeš to s
-    ním sdílet!"
-    </string>
     <string name="share_baldphone">Sdílet BaldPhone</string>
     <string name="share_contact">Sdílet kontakt</string>
     <string name="share_differently">Sdílet přes jinou aplikaci</string>
@@ -363,7 +352,6 @@
     <string name="low_battery_alert">Pozor, nízká baterie</string>
     <string name="low_battery_alert_subtext">Zvolte, pokud chcete, aby stavový řádek byl na domovské obrazovce červený, když je baterie méně než 20% \nPoznámka se nezobrazí, pokud je stavový řádek systému skrytý.</string>
 
-    <string name="also_available_at">Also available at\nbaldphone.contact@gmail.com\nFeedback must be in English/Hebrew!</string>
     <string name="grant_all_permissions">Grant All Permissions</string>
 
 

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Settings > Sound > Volume: one big bar per kind of sound (SettingsActivity.showVolumeDialog). -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="8dp">
+
+    <TextView
+        style="@style/VolumeLabel"
+        android:text="@string/ring_volume" />
+
+    <SeekBar
+        android:id="@+id/ring_volume_seek_bar"
+        style="@style/VolumeSeekBar" />
+
+    <TextView
+        style="@style/VolumeLabel"
+        android:text="@string/call_volume" />
+
+    <SeekBar
+        android:id="@+id/call_volume_seek_bar"
+        style="@style/VolumeSeekBar" />
+
+    <TextView
+        style="@style/VolumeLabel"
+        android:text="@string/media_volume" />
+
+    <SeekBar
+        android:id="@+id/media_volume_seek_bar"
+        style="@style/VolumeSeekBar" />
+</LinearLayout>

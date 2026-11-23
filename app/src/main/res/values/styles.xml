@@ -228,4 +228,25 @@
         <item name="android:textSize">34dp</item>
         <item name="android:textStyle">bold</item>
     </style>
+
+    <!-- Settings > Sound > Volume (layout/volume_settings.xml) -->
+    <style name="VolumeLabel">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">12dp</item>
+        <item name="android:textColor">?bald_text_on_background</item>
+        <item name="android:textSize">22sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="VolumeSeekBar">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:minHeight">48dp</item>
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">12dp</item>
+        <item name="android:progressBackgroundTint">?bald_decoration_on_background</item>
+        <item name="android:progressTint">?bald_selected_on_background</item>
+        <item name="android:thumbTint">?bald_decoration_on_background</item>
+    </style>
 </resources>

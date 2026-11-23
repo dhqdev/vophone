@@ -24,6 +24,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.UserManager;
@@ -248,7 +249,7 @@ public final class KioskManager {
 
     /**
      * vophone, every app with a launcher icon, the camera, the SMS app, the permission dialogs,
-     * the app store and the app installer; but never the Android settings or other home screens.
+     * the app store, the app installer and the ringtone list; but never the Android settings or other home screens.
      */
     private static String[] allowedPackages(Context context) {
         final PackageManager pm = context.getPackageManager();
@@ -261,6 +262,8 @@ public final class KioskManager {
         allowed.addAll(packagesHandling(pm, new Intent(MediaStore.ACTION_IMAGE_CAPTURE)));
         allowed.addAll(packagesHandling(pm, new Intent(MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA)));
         allowed.addAll(packagesHandling(pm, new Intent("android.content.pm.action.REQUEST_PERMISSIONS")));
+        // Settings > Sound > Ringtone opens Android's ringtone list (its own small app on most phones).
+        allowed.addAll(packagesHandling(pm, new Intent(RingtoneManager.ACTION_RINGTONE_PICKER)));
         // App stores ("Loja de apps" in the "Mais" screen) and the system installer that some of them use.
         allowed.addAll(packagesHandling(pm, new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + context.getPackageName()))));
         allowed.addAll(packagesHandling(pm, new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_APP_MARKET)));

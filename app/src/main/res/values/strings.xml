@@ -16,10 +16,7 @@
 
 <resources>
     <string name="about">About</string>
-    <string name="about_subtext">Hi!\nMy name is Uriah Shaul Mandel, and I\'m the developer of this platform.\n
-        I\'ve spent most of my \"adult\" life making this platform, and I\'ve released it for free, for all to
-        use.\nYou are more than welcome to contact me by email:\nbaldphone.contact@gmail.com
-    </string>
+    <string name="about_subtext">vophone is a simple phone with big buttons, made for elderly people in Brazil.\nIt is free and open source, based on BaldPhone by Uriah Shaul Mandel (Apache 2.0 license).\nNews, questions and suggestions: github.com/dhqdev/vophone</string>
     <string name="accessibility_level">Accessibility Level</string>
     <string name="accessibility_settings">Accessibility</string>
     <string name="accidental_touches">Accidental Touch Guard</string>
@@ -229,13 +226,8 @@
     <string name="settings">Settings</string>
     <string name="settings_permission">Settings Permission</string>
     <string name="share">Share</string>
-    <string name="share_actual_text">Hi, I\'m using this platform named "vophone" which replaces the phone\'s
-        interface to a big, simple and friendly one.\nInterested?\nYou can download it for free!\ncheck out the link
-        below for more information:\n\nhttps://baldphone.com
-    </string>
-    <string name="share_bald_phone_subtext">Hey, know anyone who may want to know about vophone?\nYou can
-        share it with them!"
-    </string>
+    <string name="share_actual_text">Hi, I\'m using vophone, which turns the phone into a big, simple and friendly one.\nIt is free! Download it here:\n\nhttps://github.com/dhqdev/vophone/releases/latest</string>
+    <string name="share_bald_phone_subtext">Do you know anyone who would like vophone?\nYou can send it to them!</string>
     <string name="share_baldphone">Share vophone</string>
     <string name="share_contact">Share Contact</string>
     <string name="share_differently">Share Via Other App</string>
@@ -362,7 +354,7 @@
     <string name="low_battery_alert">Low battery alert</string>
     <string name="low_battery_alert_subtext">Choose if you want the status bar to be red on the home screen when battery is under 20%\nNotice It won\'t be shown if the system status bar is hidden.</string>
 
-    <string name="also_available_at">Also available at\nbaldphone.contact@gmail.com\nFeedback must be in English/Hebrew!</string>
+    <string name="also_available_at">Write your suggestion below. It will open on the vophone page on the internet (GitHub), where you can send it.</string>
     <string name="grant_all_permissions">Grant All Permissions</string>
 
 
@@ -444,6 +436,26 @@
     <string name="tap_to_return_to_call">Tap to return to the call</string>
     <string name="calls_channel">Calls</string>
     <string name="alarms_channel">Alarms and pill reminders</string>
+    <!-- vophone settings: sound, battery, date, kiosk -->
+    <string name="volume">Volume</string>
+    <string name="volume_subtext">Slide to the right to make it louder.</string>
+    <string name="ring_volume">Ringtone and notifications</string>
+    <string name="call_volume">Calls (the other person\'s voice)</string>
+    <string name="media_volume">Videos, music and games</string>
+    <string name="volume_blocked_by_dnd">Turn off \"Do not disturb\" to change this volume.</string>
+    <string name="ringtone">Ringtone</string>
+    <string name="ringtone_changed">Ringtone changed.</string>
+    <string name="battery">Battery</string>
+    <string name="battery_level">%1$d%%\n%2$s</string>
+    <string name="battery_charging">Charging.</string>
+    <string name="battery_full">Fully charged.</string>
+    <string name="battery_not_charging">Not charging.</string>
+    <string name="battery_low">Low battery: plug in the charger.</string>
+    <string name="date_and_time">Date and time</string>
+    <string name="mobile_data">Mobile data</string>
+    <string name="kiosk_blocks_android_settings">Kiosk mode is on, so the Android settings are closed.\nAsk whoever takes care of this phone to turn kiosk mode off (Settings > Kiosk mode) and try again.</string>
+    <string name="no_browser">No internet browser was found on this phone.</string>
+    <string name="feedback_title">Suggestion from a vophone user</string>
     <string name="mute_turn_on">Mute</string>
     <string name="mute_turn_off">Mute ON</string>
     <string name="muted_hint">Muted: the other person cannot hear you</string>

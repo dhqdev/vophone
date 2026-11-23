@@ -20,12 +20,16 @@ import android.annotation.SuppressLint;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.media.AudioManager;
 import android.media.Ringtone;
+import android.media.RingtoneManager;
 import android.net.Uri;
 import android.nfc.NfcAdapter;
 import android.nfc.NfcManager;
+import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -66,7 +70,6 @@ import com.bald.uriah.baldphone.utils.S;
 import com.bald.uriah.baldphone.utils.GithubUpdater;
 import com.bald.uriah.baldphone.views.BaldTitleBar;
 import com.bald.uriah.baldphone.views.ModularRecyclerView;
-import com.bumptech.glide.Glide;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import java.util.ArrayList;
@@ -88,8 +91,14 @@ public class SettingsActivity extends BaldActivity {
             connectionCategory = new Category(R.string.connection_settings, R.drawable.wifi_on_button, 0),
             accessibilityCategory = new Category(R.string.accessibility_settings, R.drawable.accessibility_on_button, 1),
             displayCategory = new Category(R.string.display_settings, R.drawable.screen_on_button, 2),
-            personalizationCategory = new Category(R.string.personalization_settings, R.drawable.brush_on_button, 3);
-    private final Category[] categoriesArray = new Category[]{mainCategory, connectionCategory, accessibilityCategory, displayCategory, displayCategory, personalizationCategory};
+            personalizationCategory = new Category(R.string.personalization_settings, R.drawable.brush_on_button, 3),
+            soundCategory = new Category(R.string.sound, R.drawable.volume_on_button, 4);
+    private final Category[] categoriesArray = new Category[]{mainCategory, connectionCategory, accessibilityCategory, displayCategory, personalizationCategory, soundCategory};
+    private static final int REQUEST_RINGTONE = 8137;
+    /**
+     * Feedback and "share" point here: the vophone project page (see {@link FeedbackActivity}).
+     */
+    public static final String VOPHONE_PAGE = "https://github.com/dhqdev/vophone";
     private final SparseArray<Category> categorySparseArray;
     private Category currentCategory = mainCategory;
 
@@ -197,6 +206,142 @@ public class SettingsActivity extends BaldActivity {
         }
     }
 
+    /**
+     * Opens a screen of the Android settings. In kiosk mode the Android settings are closed on purpose
+     * (see {@link KioskManager}), so instead of a button that does nothing, the user is told why.
+     */
+    private void openAndroidSettings(Intent intent) {
+        if (KioskManager.isEnabled(this)) {
+            BDB.from(this)
+                    .setTitle(R.string.kiosk_mode)
+                    .setSubText(R.string.kiosk_blocks_android_settings)
+                    .addFlag(BDialog.FLAG_OK)
+                    .show();
+            return;
+        }
+        startActivity(intent);
+    }
+
+    private SettingsItem androidSettingsItem(@StringRes int textResId, Intent intent, @DrawableRes int drawableResId) {
+        return new RunnableSettingsItem(textResId, v -> openAndroidSettings(intent), drawableResId);
+    }
+
+    /**
+     * Ring, call and media volume. Built again on every click, so the bars show the current volumes.
+     */
+    private void showVolumeDialog() {
+        final AudioManager audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
+        if (audioManager == null) {
+            BaldToast.error(this);
+            return;
+        }
+        final View view = LayoutInflater.from(this).inflate(R.layout.volume_settings, null, false);
+        setupVolumeSeekBar(view.findViewById(R.id.ring_volume_seek_bar), audioManager, AudioManager.STREAM_RING);
+        setupVolumeSeekBar(view.findViewById(R.id.call_volume_seek_bar), audioManager, AudioManager.STREAM_VOICE_CALL);
+        setupVolumeSeekBar(view.findViewById(R.id.media_volume_seek_bar), audioManager, AudioManager.STREAM_MUSIC);
+        BDB.from(this)
+                .setTitle(R.string.volume)
+                .setSubText(R.string.volume_subtext)
+                .addFlag(BDialog.FLAG_OK)
+                .setPositiveButtonListener(params -> true)
+                .setExtraView(view)
+                .show();
+    }
+
+    private void setupVolumeSeekBar(SeekBar seekBar, AudioManager audioManager, int stream) {
+        // Ring and call volume never go down to 0 from here: an elderly user would miss every call
+        // without knowing why. Silencing the phone is still possible with its volume keys.
+        final int min = stream == AudioManager.STREAM_MUSIC ? 0 : 1;
+        seekBar.setMax(audioManager.getStreamMaxVolume(stream));
+        seekBar.setProgress(audioManager.getStreamVolume(stream));
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (!fromUser)
+                    return;
+                if (progress < min) {
+                    seekBar.setProgress(min);
+                    return;
+                }
+                try {
+                    audioManager.setStreamVolume(stream, progress, AudioManager.FLAG_PLAY_SOUND);
+                } catch (SecurityException e) {
+                    // With "Do not disturb" on, Android does not let apps change the ring volume.
+                    Log.e(TAG, "could not change the volume", e);
+                    seekBar.setProgress(audioManager.getStreamVolume(stream));
+                    BaldToast.from(SettingsActivity.this).setType(BaldToast.TYPE_ERROR).setText(R.string.volume_blocked_by_dnd).show();
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
+    }
+
+    /**
+     * Android's own list of ringtones. The chosen one becomes the phone's ringtone (needs "modify system settings",
+     * which this screen already asks for).
+     */
+    private void pickRingtone() {
+        final Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER)
+                .putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_RINGTONE)
+                .putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, getString(R.string.ringtone))
+                .putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_SILENT, false)
+                .putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_DEFAULT, false)
+                .putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, RingtoneManager.getActualDefaultRingtoneUri(this, RingtoneManager.TYPE_RINGTONE));
+        startActivityForResult(intent, REQUEST_RINGTONE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode != REQUEST_RINGTONE || resultCode != RESULT_OK || data == null)
+            return;
+        final Uri uri = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
+        if (uri == null)
+            return;
+        try {
+            RingtoneManager.setActualDefaultRingtoneUri(this, RingtoneManager.TYPE_RINGTONE, uri);
+            BaldToast.from(this).setText(R.string.ringtone_changed).show();
+        } catch (Exception e) {
+            Log.e(TAG, "could not change the ringtone", e);
+            BaldToast.error(this);
+        }
+    }
+
+    /**
+     * Battery level in big letters, inside vophone (works in kiosk mode too).
+     */
+    private void showBatteryDialog() {
+        final Intent battery = registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+        if (battery == null) {
+            BaldToast.error(this);
+            return;
+        }
+        final int level = battery.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
+        final int scale = battery.getIntExtra(BatteryManager.EXTRA_SCALE, 100);
+        final int status = battery.getIntExtra(BatteryManager.EXTRA_STATUS, BatteryManager.BATTERY_STATUS_UNKNOWN);
+        final int percent = level < 0 || scale <= 0 ? 0 : Math.round(level * 100f / scale);
+        final int state;
+        if (status == BatteryManager.BATTERY_STATUS_FULL)
+            state = R.string.battery_full;
+        else if (status == BatteryManager.BATTERY_STATUS_CHARGING)
+            state = R.string.battery_charging;
+        else
+            state = percent <= 20 ? R.string.battery_low : R.string.battery_not_charging;
+        BDB.from(this)
+                .setTitle(R.string.battery)
+                .setSubText(getString(R.string.battery_level, percent, getString(state)))
+                .addFlag(BDialog.FLAG_OK)
+                .setPositiveButtonListener(params -> true)
+                .show();
+    }
+
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -213,9 +358,15 @@ public class SettingsActivity extends BaldActivity {
 
     private void populateSettingsList() {
         mainCategory.add(connectionCategory);
+        mainCategory.add(soundCategory);
         mainCategory.add(accessibilityCategory);
         mainCategory.add(displayCategory);
         mainCategory.add(personalizationCategory);
+        mainCategory.add(new RunnableSettingsItem(R.string.battery, v -> showBatteryDialog(), R.drawable.low_battery_alert_on_button));
+        mainCategory.add(androidSettingsItem(R.string.date_and_time, new Intent(Settings.ACTION_DATE_SETTINGS), R.drawable.date_on_button));
+
+        soundCategory.add(new RunnableSettingsItem(R.string.volume, v -> showVolumeDialog(), R.drawable.volume_on_button));
+        soundCategory.add(new RunnableSettingsItem(R.string.ringtone, v -> pickRingtone(), R.drawable.ringtone_on_button));
 
         mainCategory.add(
                 new RunnableSettingsItem(R.string.set_home_screen,
@@ -243,13 +394,13 @@ public class SettingsActivity extends BaldActivity {
                     })
                     .show(), R.drawable.blocked_on_button));
 
-        mainCategory.add(new RunnableSettingsItem(R.string.advanced_options, v -> startActivity(new Intent(Settings.ACTION_SETTINGS)), R.drawable.settings_on_button));
+        mainCategory.add(androidSettingsItem(R.string.advanced_options, new Intent(Settings.ACTION_SETTINGS), R.drawable.settings_on_button));
 
         final SettingsItem keyboard = new RunnableSettingsItem(R.string.set_keyboard, v -> startActivity(new Intent(this, KeyboardChangerActivity.class)), R.drawable.keyboard_on_button);
         accessibilityCategory.add(keyboard);
         personalizationCategory.add(keyboard);
 
-        personalizationCategory.add(new RunnableSettingsItem(R.string.language_settings, v -> startActivity(new Intent(Settings.ACTION_LOCALE_SETTINGS)), R.drawable.translate_on_button));
+        personalizationCategory.add(androidSettingsItem(R.string.language_settings, new Intent(Settings.ACTION_LOCALE_SETTINGS), R.drawable.translate_on_button));
 
         personalizationCategory.add(
                 new BDBSettingsItem(R.string.emergency_button, BDB.from(this)
@@ -335,7 +486,7 @@ public class SettingsActivity extends BaldActivity {
                 R.drawable.status_bar_on_button
         ));
 
-        personalizationCategory.add(new BDBSettingsItem(R.string.dialer_sounds,
+        final SettingsItem dialerSounds = new BDBSettingsItem(R.string.dialer_sounds,
                 BDB.from(this)
                         .addFlag(BDialog.FLAG_OK | BDialog.FLAG_CANCEL)
                         .setTitle(R.string.dialer_sounds)
@@ -348,7 +499,9 @@ public class SettingsActivity extends BaldActivity {
                         })
                         .setOptionsStartingIndex(() -> sharedPreferences.getBoolean(BPrefs.DIALER_SOUNDS_KEY, BPrefs.DIALER_SOUNDS_DEFAULT_VALUE) ? 0 : 1),
                 R.drawable.phone_on_button
-        ));
+        );
+        personalizationCategory.add(dialerSounds);
+        soundCategory.add(dialerSounds);
         personalizationCategory.add(new BDBSettingsItem(R.string.dual_sim,
                 BDB.from(this)
                         .addFlag(BDialog.FLAG_OK | BDialog.FLAG_CANCEL)
@@ -380,7 +533,7 @@ public class SettingsActivity extends BaldActivity {
         personalizationCategory.add(
                 new BDBSettingsItem(R.string.colorful,
                         BDB.from(this)
-                                .addFlag(BDialog.FLAG_OK | BDialog.FLAG_CANCEL).setTitle(R.string.apps_sort_method)
+                                .addFlag(BDialog.FLAG_OK | BDialog.FLAG_CANCEL).setTitle(R.string.colorful)
                                 .setSubText(R.string.colorful_subtext)
                                 .setOptions(R.string.yes, R.string.no)
                                 .setPositiveButtonListener(params -> {
@@ -414,24 +567,19 @@ public class SettingsActivity extends BaldActivity {
         setupAlarmVolume();
 
         //connections
-        connectionCategory.add(new RunnableSettingsItem(R.string.airplane_mode, v -> startActivity(new Intent(Settings.ACTION_AIRPLANE_MODE_SETTINGS)), R.drawable.airplane_mode_on_button));
-        connectionCategory.add(new RunnableSettingsItem(R.string.wifi, v -> startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS).addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT)), R.drawable.wifi_on_button));
-        connectionCategory.add(new RunnableSettingsItem(R.string.bluetooth, v -> startActivity(new Intent(Settings.ACTION_BLUETOOTH_SETTINGS)), R.drawable.bluetooth_on_button));
+        connectionCategory.add(androidSettingsItem(R.string.wifi, new Intent(Settings.ACTION_WIFI_SETTINGS).addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT), R.drawable.wifi_on_button));
+        // Android 10+: a small panel with the mobile data switch; before that, the mobile network screen.
+        connectionCategory.add(androidSettingsItem(R.string.mobile_data,
+                new Intent(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q ? Settings.Panel.ACTION_INTERNET_CONNECTIVITY : Settings.ACTION_DATA_ROAMING_SETTINGS),
+                R.drawable.sim_on_button));
+        connectionCategory.add(androidSettingsItem(R.string.airplane_mode, new Intent(Settings.ACTION_AIRPLANE_MODE_SETTINGS), R.drawable.airplane_mode_on_button));
+        connectionCategory.add(androidSettingsItem(R.string.bluetooth, new Intent(Settings.ACTION_BLUETOOTH_SETTINGS), R.drawable.bluetooth_on_button));
 
-        NfcManager manager = (NfcManager) getSystemService(Context.NFC_SERVICE);
-        NfcAdapter adapter = manager.getDefaultAdapter();
+        final NfcManager manager = (NfcManager) getSystemService(Context.NFC_SERVICE);
+        final NfcAdapter adapter = manager == null ? null : manager.getDefaultAdapter();
         if (adapter != null)
-            connectionCategory.add(new RunnableSettingsItem(R.string.nfc, v -> {
-                try {
-                    startActivity(new Intent(Settings.ACTION_NFC_SETTINGS));
-                } catch (ActivityNotFoundException e) {
-                    Log.e(TAG, e.getMessage());
-                    e.printStackTrace();
-                    BaldToast.from(this).setText(R.string.setting_does_not_exist).setType(BaldToast.TYPE_ERROR).show();
-
-                }
-            }, R.drawable.nfc_on_button));
-        connectionCategory.add(new RunnableSettingsItem(R.string.location, v -> startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)), R.drawable.location_on_button));
+            connectionCategory.add(androidSettingsItem(R.string.nfc, new Intent(Settings.ACTION_NFC_SETTINGS), R.drawable.nfc_on_button));
+        connectionCategory.add(androidSettingsItem(R.string.location, new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS), R.drawable.location_on_button));
 
         final LinearLayout linearLayout = new LinearLayout(this);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
@@ -439,11 +587,8 @@ public class SettingsActivity extends BaldActivity {
         LayoutInflater.from(this).inflate(R.layout.open_source_licenses_button, linearLayout, true);
         LayoutInflater.from(this).inflate(R.layout.website_button, linearLayout, true);
         linearLayout.findViewById(R.id.credits_button).setOnClickListener(v -> startActivity(new Intent(this, CreditsActivity.class)));
-        linearLayout.findViewById(R.id.open_source_licenses_button).setOnClickListener(v -> startActivity(new Intent(ACTION_VIEW, Uri.parse("https://sites.google.com/view/baldphone-open-source-licenses/home"))));
-        linearLayout.findViewById(R.id.website_button).setOnClickListener(v -> startActivity(new Intent(ACTION_VIEW, Uri.parse("https://baldphone.com/"))));
-        final ImageView pic = new ImageView(this);
-        linearLayout.addView(pic);
-        Glide.with(pic).load(R.drawable.me).into(pic);
+        linearLayout.findViewById(R.id.open_source_licenses_button).setOnClickListener(v -> openPage("https://sites.google.com/view/baldphone-open-source-licenses/home"));
+        linearLayout.findViewById(R.id.website_button).setOnClickListener(v -> openPage(VOPHONE_PAGE));
 
         mainCategory.add(
                 new BDBSettingsItem(R.string.about,
@@ -455,11 +600,6 @@ public class SettingsActivity extends BaldActivity {
                                 .setExtraView(linearLayout)
 
                         , R.drawable.info_on_button)
-        );
-        mainCategory.add(
-                new RunnableSettingsItem(R.string.get_involved,
-                        v -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/UriahShaulMandel/BaldPhone/blob/master/CONTRIBUTING.md"))),
-                        R.drawable.contribute_on_button)
         );
         mainCategory.add(
                 new RunnableSettingsItem(R.string.technical_information,
@@ -556,6 +696,7 @@ public class SettingsActivity extends BaldActivity {
 
         );
         personalizationCategory.add(alarmVolumeSettingsItem);
+        soundCategory.add(alarmVolumeSettingsItem);
 
     }
 
@@ -620,6 +761,14 @@ public class SettingsActivity extends BaldActivity {
                         .setExtraView(brightnessSeekBarHolder), R.drawable.brightness_on_button
         );
         displayCategory.add(brightnessSettingsItem);
+    }
+
+    private void openPage(String url) {
+        try {
+            startActivity(new Intent(ACTION_VIEW, Uri.parse(url)));
+        } catch (ActivityNotFoundException e) {
+            BaldToast.from(this).setType(BaldToast.TYPE_ERROR).setText(R.string.no_browser).show();
+        }
     }
 
     @Override

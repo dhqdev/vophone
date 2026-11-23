@@ -16,11 +16,6 @@
 
 <resources>
     <string name="about">Acerca de</string>
-    <string name="about_subtext">
-        ¡Hola, buenos días!\n
-        Me llamo Uriah Shaul Mandel y soy el desarrollador de esta plataforma. He pasado la mayor parte de mi vida «adulta» desarrollando esta plataforma, y la he lanzado gratis para beneficio de todos. Si tienes alguna duda o sugerencia he aquí mi correo electrónico:\n
-        baldphone.contact@gmail.com (si me escribes, mejor en inglés)
-    </string>
     <string name="accessibility_level">Nivel de accesibilidad</string>
     <string name="accessibility_settings">Accesibilidad</string>
     <string name="accidental_touches">Protección de toque accidental</string>
@@ -222,10 +217,6 @@
     <string name="settings">Ajustes</string>
     <string name="settings_permission">Permisos concedidos</string>
     <string name="share">Compartir</string>
-    <string name="share_actual_text">Hola, estoy usando esta plataforma llamada «BaldPhone» que reemplaza la interfaz del teléfono por otra que es más clara, grande, concisa y fácil de usar. ¿Te parece interesante? Pues puedes descargarla gratis. Haz clic en este enlace para entrar en la página Web: https://baldphone.com</string>
-    <string name="share_bald_phone_subtext">Oye, ¿conoces a alguien al que le pueda venir bien usar BaldPhone?\n
-        Si quieres puedes recomendarles la aplicación.
-    </string>
     <string name="share_baldphone">Compartir que usas BaldPhone</string>
     <string name="share_contact">Compartir contacto</string>
     <string name="share_differently">Compartir por otra aplicación</string>
@@ -357,7 +348,6 @@
     <string name="low_battery_alert_subtext">Elige si quieres que la barra de estado se ponga roja en la pantalla de inicio cuando la batería baje del 20%. Ten en cuenta que esta opción no sirve de nada si la barra de estado está oculta.
     </string>
 
-    <string name="also_available_at">También estoy disponible a través de\nbaldphone.contact@gmail.com\nLos comentarios deben de escribirse en inglés o hebreo para que yo los entienda.</string>
     <string name="grant_all_permissions">Conceder todos los permisos</string>
 
 

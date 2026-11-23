@@ -16,8 +16,7 @@
 
 <resources>
     <string name="about">Sobre</string>
-    <string name="about_subtext">Olá!\nMeu nome é Uriah Shaul Mandel, e sou o desenvolvedor deste aplicativo.\nMoro na cidade de Tel Aviv, em Israel. \nFoi necessário muito tempo e esforço para criar este aplicativo e agora estou o disponibilizando de forma gratuita para que qualquer pessoa possa utilizá-lo.\nSinta-se livre para me contatar através do meu e-mail:\nbaldphone.contact@gmail.com
-    </string>
+    <string name="about_subtext">O vophone é um celular simples, com botões grandes, feito para pessoas idosas no Brasil.\nEle é gratuito e de código aberto, baseado no BaldPhone de Uriah Shaul Mandel (licença Apache 2.0).\nNovidades, dúvidas e sugestões: github.com/dhqdev/vophone</string>
     <string name="accessibility_level">Nível de Acessibilidade</string>
     <string name="accessibility_settings">Acessibilidade</string>
     <string name="accidental_touches">Proteção contra Toques Acidentais</string>
@@ -216,8 +215,7 @@
     <string name="settings">Configurações</string>
     <string name="settings_permission">Acesso às Configurações</string>
     <string name="share">Compartilhar</string>
-    <string name="share_actual_text">Olá, estou utilizando o aplicativo chamado "vophone" \nque substitui a interface do telefone por uma interface grande, simples e intuitiva.\n
-        Caso esteja interessado Pode obtê-lo gratuitamente a partir do link abaixo \n\nhttps://baldphone.com</string>
+    <string name="share_actual_text">Oi, estou usando o vophone, que deixa o celular com botões grandes, simples e fácil de usar.\nÉ gratuito! Baixe aqui:\n\nhttps://github.com/dhqdev/vophone/releases/latest</string>
     <string name="share_bald_phone_subtext">Olá! Conhece alguém que gostaria de saber sobre o vophone?\nCompartilhe com eles agora mesmo!</string>
     <string name="share_baldphone">Compartilhar o vophone</string>
     <string name="share_contact">Compartilhar Contato</string>
@@ -338,7 +336,7 @@
     <string name="low_battery_alert_subtext">
         Escolha se deseja a barra de notificações em vermelho quando a bateria estiver abaixo de 20%.\nNão será mostrado se a barra de notificações estiver oculta.</string>
 
-    <string name="also_available_at">Também disponível através do e-mail\nbaldphone.contact@gmail.com\nOs comentários devem ser em Inglês ou Hebraico!</string>
+    <string name="also_available_at">Escreva sua sugestão abaixo. Ela vai abrir na página do vophone na internet (GitHub), onde você pode enviá-la.</string>
     <string name="grant_all_permissions">Conceder Todas Permissões</string>
 
 
@@ -420,6 +418,26 @@
     <string name="tap_to_return_to_call">Toque para voltar para a ligação</string>
     <string name="calls_channel">Ligações</string>
     <string name="alarms_channel">Alarmes e lembretes de remédio</string>
+    <!-- vophone settings: sound, battery, date, kiosk -->
+    <string name="volume">Volume</string>
+    <string name="volume_subtext">Arraste para a direita para aumentar o som.</string>
+    <string name="ring_volume">Toque e notificações</string>
+    <string name="call_volume">Ligações (voz da outra pessoa)</string>
+    <string name="media_volume">Vídeos, músicas e jogos</string>
+    <string name="volume_blocked_by_dnd">Desligue o modo \"Não perturbe\" para mudar este volume.</string>
+    <string name="ringtone">Toque do celular</string>
+    <string name="ringtone_changed">Toque alterado.</string>
+    <string name="battery">Bateria</string>
+    <string name="battery_level">%1$d%%\n%2$s</string>
+    <string name="battery_charging">Carregando.</string>
+    <string name="battery_full">Carga completa.</string>
+    <string name="battery_not_charging">Não está carregando.</string>
+    <string name="battery_low">Bateria fraca: coloque o carregador.</string>
+    <string name="date_and_time">Data e hora</string>
+    <string name="mobile_data">Dados móveis</string>
+    <string name="kiosk_blocks_android_settings">O modo quiosque está ligado, então as Configurações do Android ficam fechadas.\nPeça para quem cuida do celular desligar o modo quiosque (Configurações > Modo quiosque) e tentar de novo.</string>
+    <string name="no_browser">Nenhum navegador de internet foi encontrado neste celular.</string>
+    <string name="feedback_title">Sugestão de um usuário do vophone</string>
     <string name="mute_turn_on">Mudo</string>
     <string name="mute_turn_off">Mudo LIGADO</string>
     <string name="muted_hint">Mudo: a outra pessoa não te ouve</string>

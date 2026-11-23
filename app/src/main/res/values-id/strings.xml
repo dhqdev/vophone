@@ -16,9 +16,6 @@
 
 <resources>
     <string name="about">Tentang</string>
-    <string name="about_subtext">Hai!\nNama saya Uriah Shaul Mandel, pengembang piranti lunak ini.\n
-        Saya menghabiskan sebagian besar masa \"dewasa\" saya untuk membuat BaldPhone, dan merilisnya secara gratis agar Anda semua bisa menggunakannya.\nAnda bisa menghubungi saya melalui email:\nbaldphone.contact@gmail.com
-    </string>
     <string name="accessibility_level">Tingkat Aksesibilitas</string>
     <string name="accessibility_settings">Aksesibilitas</string>
     <string name="accidental_touches">Pencegah Sentuhan Tidak Disengaja</string>
@@ -225,13 +222,6 @@
     <string name="settings">Pengaturan</string>
     <string name="settings_permission">Pengaturan Perizinan</string>
     <string name="share">Bagikan</string>
-    <string name="share_actual_text">Hai, Saya menggunakan aplikasi bernama "BaldPhone" yang menggantikan antarmuka telepon
-        menjadi besar, sederhana dan ramah.\nTertarik?\nAnda bisa mengunduhnya secara gratis!\nPeriksa tautan
-        di bawah untuk keterangan lebih lanjut:\n\nhttps://baldphone.com
-    </string>
-    <string name="share_bald_phone_subtext">Hai, kenal seseorang yang mungkin tertarik dengan BaldPhone?\nAnda bisa
-        berbagi dengan mereka!"
-    </string>
     <string name="share_baldphone">Bagikan BaldPhone</string>
     <string name="share_contact">Bagikan Kontak</string>
     <string name="share_differently">Bagikan Melalui Aplikasi Lain</string>
@@ -359,7 +349,6 @@
     <string name="low_battery_alert">Peringatan Baterai Rendah</string>
     <string name="low_battery_alert_subtext">Pilih jika Anda ingin bilah status menjadi merah di layar beranda ketika baterai di bawah 20%\nPerhatikan ia tidak akan ditampilkan jika bilah status disembunyikan.</string>
 
-    <string name="also_available_at">Juga tersedia di\nbaldphone.contact@gmail.com\nUmpan balik harus dalam bahasa Inggris atau Ibrani!</string>
     <string name="grant_all_permissions">Berikan semua perizinan</string>
 
 

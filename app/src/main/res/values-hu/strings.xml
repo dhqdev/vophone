@@ -16,8 +16,6 @@
 
 <resources>
     <string name="about">Az alkalmazásról</string>
-    <string name="about_subtext">Szia!
-A nevem Uriah Shaul Mandel, és én fejlesztettem ezt a felületet amit használsz. Sok időt töltöttem vele, ha kérdésed van nyugodtan írj nekem emailt a baldphone.contact@gmail.com címen. (Kérlek angolul írj)</string>
     <string name="accessibility_level">Akadálymentesítési szint</string>
     <string name="accessibility_settings">Akadálymentes kezelés</string>
     <string name="accidental_touches">Véletlen érintés elleni védelem</string>
@@ -213,10 +211,6 @@ Megérkezett a BaldPhone NAGY billentyűzete!</string>
     <string name="settings">Beállítások</string>
     <string name="settings_permission">Beállítások hozzáférési engedély</string>
     <string name="share">Megosztás</string>
-    <string name="share_actual_text">Szia!
-A BaldPhone platformot használom, ami lecseréli a telefonom kis gombjait nagy jól olvasható felratokra. Ha téged is érdekel nézd meg ezen az oldalon:
-https://baldphone.com</string>
-    <string name="share_bald_phone_subtext">Tudsz valakit akit érdekelne a BaldPhone felület? Küld el neki!</string>
     <string name="share_baldphone">BaldPhone megosztása</string>
     <string name="share_contact">Névjegy megosztása</string>
     <string name="share_differently">Megosztás másik alkalmazáson keresztül</string>
@@ -334,7 +328,6 @@ https://baldphone.com</string>
     <string name="low_battery_alert">Alacsony töltöttségi szint jelzés</string>
     <string name="low_battery_alert_subtext">Válaszd ki, hogy az állapotjelző sáv 20% töltöttségi szint alatt pirosan jelezzen-e.</string>
 
-    <string name="also_available_at">Szintén elérhető a \nbaldphone.contact@gmail.com\nA visszajelzés nyelve angol vagy héber legyen.</string>
     <string name="grant_all_permissions">Minden engedély megadása</string>
 
 

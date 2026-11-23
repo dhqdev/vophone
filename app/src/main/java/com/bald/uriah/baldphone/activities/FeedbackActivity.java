@@ -16,13 +16,16 @@
 
 package com.bald.uriah.baldphone.activities;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.widget.EditText;
 
 import androidx.annotation.Nullable;
 
+import com.bald.uriah.baldphone.BuildConfig;
 import com.bald.uriah.baldphone.R;
 import com.bald.uriah.baldphone.utils.BaldToast;
 
@@ -37,19 +40,18 @@ public class FeedbackActivity extends BaldActivity {
             if (text.length() == 0)
                 BaldToast.from(v.getContext()).setType(BaldToast.TYPE_ERROR).setText(R.string.feedback_cannot_be_empty).show();
             else {
-                Intent intent =
-                        new Intent(Intent.ACTION_SENDTO)
-                                .setData(Uri.parse("mailto:"))
-                                .putExtra(Intent.EXTRA_EMAIL, new String[]{"baldphone.contact@gmail.com"})
-                                .putExtra(Intent.EXTRA_SUBJECT, "BaldPhone feedback")
-                                .putExtra(Intent.EXTRA_TEXT, String.valueOf(text));
-                if (intent.resolveActivity(getPackageManager()) != null) {
-                    startActivity(intent);
+                // vophone: suggestions go to the project page (BaldPhone's e-mail is not read for vophone).
+                final Uri page = Uri.parse(SettingsActivity.VOPHONE_PAGE + "/issues/new").buildUpon()
+                        .appendQueryParameter("title", getString(R.string.feedback_title))
+                        .appendQueryParameter("body", text + "\n\n---\nvophone " + BuildConfig.VERSION_NAME
+                                + " / Android " + Build.VERSION.RELEASE + " / " + Build.MANUFACTURER + " " + Build.MODEL)
+                        .build();
+                try {
+                    startActivity(new Intent(Intent.ACTION_VIEW, page));
                     finish();
-                } else {
-                    // No mail client, weird!
+                } catch (ActivityNotFoundException e) {
                     BaldToast.from(this)
-                            .setText(R.string.mail_application_not_found)
+                            .setText(R.string.no_browser)
                             .setType(BaldToast.TYPE_ERROR)
                             .show();
                 }

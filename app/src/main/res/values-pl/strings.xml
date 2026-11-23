@@ -16,10 +16,6 @@
 
 <resources>
     <string name="about">O programie</string>
-    <string name="about_subtext">Cześć !\nMam na imie Uriah Shaul Mandel, jestem developerem tej platformy.\n
-        Spędziłem większość swojego \"dorosłego\" życia tworząc tą platformę, i wypuściłem ją za darmo, dla każdego do użytku.
-        \nMożesz spokojnie do mnie napisać na ten adres email: \nbaldphone.contact@gmail.com
-    </string>
     <string name="accessibility_level">Poziom dostępności</string>
     <string name="accessibility_settings">Dostępność</string>
     <string name="accidental_touches">Zapobiegaj przypadkowym dotknięciom</string>
@@ -218,10 +214,6 @@
     <string name="settings">Ustawienia</string>
     <string name="settings_permission">Ustawienia dozwoleń</string>
     <string name="share">Udostępnij</string>
-    <string name="share_actual_text">Cześć, używam aplikacji "BaldPhone" która sprawia że interfejs telefonu jest duży, prosty i przyjazny. \nZaintesowany/a?\nTa aplikacja jest darmowa!\nkliknij link
-        poniżej aby zobaczyć więcej informacji:\n\nhttps://baldphone.com
-    </string>
-    <string name="share_bald_phone_subtext">Znasz kogoś kto też chciałby używać BaldPhone ? Udostępnij !</string>
     <string name="share_baldphone">Udostępnij BaldPhone</string>
     <string name="share_contact">Udostępnij kontakt</string>
     <string name="share_differently">Udostępnij przez inną aplikację</string>
@@ -346,7 +338,6 @@
     <string name="low_battery_alert">Ostrzeżenie o niskim poziomie baterii</string>
     <string name="low_battery_alert_subtext">Czy chcesz aby belka statusu była czerwona kiedy bateria jest poniżej 20%\nPamiętaj że to ustawienie jest zależne od od tego czy masz włączoną belkę statusu.</string>
 
-    <string name="also_available_at">Dostępny także pod adresem\nbaldphone.contact@gmail.com\nWiadomość musi być po Anglelsku lub Hebraksju!</string>
     <string name="grant_all_permissions">Przyznaj wszystkie dozwolenia</string>
 
 
