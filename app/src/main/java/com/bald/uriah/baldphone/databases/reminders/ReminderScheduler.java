@@ -29,6 +29,7 @@ import com.bald.uriah.baldphone.activities.pills.PillsActivity;
 import com.bald.uriah.baldphone.broadcast_receivers.ReminderReceiver;
 import com.bald.uriah.baldphone.utils.BPrefs;
 import com.bald.uriah.baldphone.utils.D;
+import com.bald.uriah.baldphone.utils.RingingScreens;
 import com.bald.uriah.baldphone.utils.S;
 
 import org.joda.time.DateTime;
@@ -157,15 +158,19 @@ public class ReminderScheduler {
             alarmManager.setAlarmClock(
                     new AlarmManager.AlarmClockInfo(
                             nextTimeReminderWillWorkInMs,
-                            PendingIntent.getActivity(context, 0, new Intent(context, PillsActivity.class), 0)
+                            PendingIntent.getActivity(context, 0, new Intent(context, PillsActivity.class), RingingScreens.immutable(0))
                     ),
                     getIntent(context, reminder.getId())
             );
         }
     }
 
+    /**
+     * Keep these flags as they are: FLAG_IMMUTABLE would make a different PendingIntent, so the alarms
+     * scheduled by older versions could no longer be cancelled (an edited reminder would also ring at its old time).
+     * When targetSdk goes to 31+, add FLAG_IMMUTABLE and also cancel the old PendingIntent (same request code, flags without it).
+     */
     private static PendingIntent getIntent(Context context, int alarmKey) {
-        Log.e(TAG, "getIntent: ");
         Intent intent = new Intent(context, ReminderReceiver.class).putExtra(Reminder.REMINDER_KEY_VIA_INTENTS, alarmKey);
         return PendingIntent.getBroadcast(context, alarmKey, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
@@ -176,7 +181,7 @@ public class ReminderScheduler {
             alarmManager.setAlarmClock(
                     new AlarmManager.AlarmClockInfo(
                             DateTime.now().getMillis() + SNOOZE_MILLIS,
-                            PendingIntent.getActivity(context, alarm.getId(), new Intent(context, HomeScreenActivity.class), 0)//TODO??
+                            PendingIntent.getActivity(context, alarm.getId(), new Intent(context, PillsActivity.class), RingingScreens.immutable(0))
                     ),
                     getIntent(context, alarm.getId())
             );

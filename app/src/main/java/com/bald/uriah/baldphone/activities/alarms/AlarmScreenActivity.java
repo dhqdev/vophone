@@ -41,6 +41,7 @@ import com.bald.uriah.baldphone.utils.Animations;
 import com.bald.uriah.baldphone.utils.BPrefs;
 import com.bald.uriah.baldphone.utils.BaldToast;
 import com.bald.uriah.baldphone.utils.D;
+import com.bald.uriah.baldphone.utils.RingingScreens;
 import com.bald.uriah.baldphone.utils.S;
 
 /**
@@ -57,9 +58,11 @@ public class AlarmScreenActivity extends TimedBaldActivity {
 
     private TextView tv_name, snooze;
     private ImageView cancel;
-    private Ringtone ringtone;
+    @Nullable
+    private RingingScreens.Ringer ringer;
     private Alarm alarm;
 
+    @Nullable
     public static Ringtone getRingtone(Context context) {
         Uri alert =
                 RingtoneManager
@@ -70,7 +73,9 @@ public class AlarmScreenActivity extends TimedBaldActivity {
         if (alert == null)
             alert = RingtoneManager
                     .getActualDefaultRingtoneUri(context.getApplicationContext(), RingtoneManager.TYPE_RINGTONE);
-        final Ringtone ringtone = RingtoneManager.getRingtone(context, alert);
+        final Ringtone ringtone = alert == null ? null : RingtoneManager.getRingtone(context, alert);
+        if (ringtone == null)
+            return null;
         final AudioManager audioManager = (AudioManager) context.getSystemService(AUDIO_SERVICE);
         if (audioManager != null) {//who knows lol - btw don't delete user's may lower the alarm sounds by mistake
             final int alarmVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_ALARM) * (BPrefs.get(context).getInt(BPrefs.ALARM_VOLUME_KEY, BPrefs.ALARM_VOLUME_DEFAULT_VALUE) + 6) / 10;
@@ -84,6 +89,7 @@ public class AlarmScreenActivity extends TimedBaldActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         S.logImportant("alarmScreen was called!");
+        RingingScreens.cancelNotification(this, RingingScreens.ALARM_NOTIFICATION_ID);
         setContentView(R.layout.alarm_screen);
 
         attachXml();
@@ -95,6 +101,7 @@ public class AlarmScreenActivity extends TimedBaldActivity {
         alarm = AlarmsDatabase.getInstance(this).alarmsDatabaseDao().getByKey(key);
         if (alarm == null) {
             S.logImportant("alarm == null!, returning");
+            finish();
             return;
         }
 
@@ -102,17 +109,18 @@ public class AlarmScreenActivity extends TimedBaldActivity {
         if (name == null) tv_name.setVisibility(View.GONE);
         else tv_name.setText(name);
 
+        // (an alarm without a name has a null name: compare the other way around)
         cancel.setOnClickListener(v -> {
             if (vibrator != null)
                 vibrator.vibrate(D.vibetime);
-            if (alarm.getName().equals(getString(R.string.timer)))
+            if (getString(R.string.timer).equals(alarm.getName()))
                 AlarmsDatabase.getInstance(this).alarmsDatabaseDao().delete(alarm);
             finish();
         });
         cancel.setOnLongClickListener(v -> {
             if (vibrator != null)
                 vibrator.vibrate(D.vibetime);
-            if (alarm.getName().equals(getString(R.string.timer)))
+            if (getString(R.string.timer).equals(alarm.getName()))
                 AlarmsDatabase.getInstance(this).alarmsDatabaseDao().delete(alarm);
             finish();
             return true;
@@ -124,14 +132,7 @@ public class AlarmScreenActivity extends TimedBaldActivity {
             return true;
         });
 
-        ringtone = getRingtone(this);
-        try {
-            ringtone.play();
-        } catch (Exception e) {
-            BaldToast.error(this);
-            Log.e(TAG, e.getMessage());
-            e.printStackTrace();
-        }
+        ringer = new RingingScreens.Ringer(this, getRingtone(this));
 
         Animations.makeBiggerAndSmaller(this, cancel, () -> {
             if (vibrator != null) vibrator.vibrate(D.vibetime);
@@ -142,21 +143,21 @@ public class AlarmScreenActivity extends TimedBaldActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        if (ringtone != null)
-            ringtone.play();
+        if (ringer != null)
+            ringer.start();
     }
 
     @Override
     protected void onStop() {
-        if (ringtone != null)
-            ringtone.stop();
+        if (ringer != null)
+            ringer.stop();
         super.onStop();
     }
 
     @Override
     protected void onDestroy() {
-        if (ringtone != null)
-            ringtone.stop();
+        if (ringer != null)
+            ringer.stop();
         super.onDestroy();
     }
 
@@ -198,8 +199,12 @@ public class AlarmScreenActivity extends TimedBaldActivity {
         return D.MINUTE * 5;
     }
 
+    /**
+     * None: a ringing alarm must always show. ("Appear on top" is asked for in the alarms list instead,
+     * it is what lets this screen open by itself.)
+     */
     @Override
     protected int requiredPermissions() {
-        return PERMISSION_SYSTEM_ALERT_WINDOW;
+        return PERMISSION_NONE;
     }
 }

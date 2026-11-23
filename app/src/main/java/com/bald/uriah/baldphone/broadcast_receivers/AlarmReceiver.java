@@ -25,6 +25,8 @@ import com.bald.uriah.baldphone.activities.alarms.AlarmScreenActivity;
 import com.bald.uriah.baldphone.databases.alarms.Alarm;
 import com.bald.uriah.baldphone.databases.alarms.AlarmScheduler;
 import com.bald.uriah.baldphone.databases.alarms.AlarmsDatabase;
+import com.bald.uriah.baldphone.R;
+import com.bald.uriah.baldphone.utils.RingingScreens;
 
 /**
  * the middle man between the {@link AlarmScheduler} and {@link AlarmScreenActivity}.
@@ -46,9 +48,8 @@ public class AlarmReceiver extends BroadcastReceiver {
         }
 
         final Context appContext = context.getApplicationContext();
-        appContext.startActivity(new Intent(appContext, AlarmScreenActivity.class)
-                .putExtra(Alarm.ALARM_KEY_VIA_INTENTS, key)
-                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        );
+        RingingScreens.open(appContext,
+                new Intent(appContext, AlarmScreenActivity.class).putExtra(Alarm.ALARM_KEY_VIA_INTENTS, key),
+                RingingScreens.ALARM_NOTIFICATION_ID, R.string.alarm, alarm.getName());
     }
 }

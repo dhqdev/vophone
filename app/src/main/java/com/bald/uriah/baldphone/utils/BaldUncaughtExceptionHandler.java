@@ -58,7 +58,7 @@ public class BaldUncaughtExceptionHandler implements Thread.UncaughtExceptionHan
                                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
                                         | Intent.FLAG_ACTIVITY_CLEAR_TASK
                                         | Intent.FLAG_ACTIVITY_NEW_TASK),
-                        PendingIntent.FLAG_ONE_SHOT
+                        RingingScreens.immutable(PendingIntent.FLAG_ONE_SHOT)
                 );
 
         final AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);

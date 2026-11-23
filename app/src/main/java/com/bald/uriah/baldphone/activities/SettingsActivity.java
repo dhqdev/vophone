@@ -532,7 +532,8 @@ public class SettingsActivity extends BaldActivity {
 
                 sharedPreferences.edit().putInt(BPrefs.ALARM_VOLUME_KEY, progress).apply();
                 ringtone = AlarmScreenActivity.getRingtone(SettingsActivity.this);
-                ringtone.play();
+                if (ringtone != null)
+                    ringtone.play();
                 handler.postDelayed(closeRingtone, 4 * D.SECOND);
 
             }

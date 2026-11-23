@@ -39,6 +39,7 @@ import com.bald.uriah.baldphone.databases.reminders.RemindersDatabase;
 import com.bald.uriah.baldphone.utils.Animations;
 import com.bald.uriah.baldphone.utils.BaldToast;
 import com.bald.uriah.baldphone.utils.D;
+import com.bald.uriah.baldphone.utils.RingingScreens;
 import com.bald.uriah.baldphone.utils.S;
 
 public class PillScreenActivity extends TimedBaldActivity {
@@ -48,13 +49,15 @@ public class PillScreenActivity extends TimedBaldActivity {
 
     private TextView tv_textual_content, snooze, took;
     private ImageView iv_pill;
-    private Ringtone ringtone;
+    @Nullable
+    private RingingScreens.Ringer ringer;
     private Reminder reminder;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         S.logImportant("reminderScreen was called!");
+        RingingScreens.cancelNotification(this, RingingScreens.PILL_NOTIFICATION_ID);
         setContentView(R.layout.reminder_screen);
 
         attachXml();
@@ -66,6 +69,7 @@ public class PillScreenActivity extends TimedBaldActivity {
         reminder = RemindersDatabase.getInstance(this).remindersDatabaseDao().getById(key);
         if (reminder == null) {
             S.logImportant("reminder == null!, returning");
+            finish();
             return;
         }
 
@@ -98,6 +102,7 @@ public class PillScreenActivity extends TimedBaldActivity {
             return true;
         });
 
+        Ringtone ringtone = null;
         try {
             Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
             ringtone = RingtoneManager.getRingtone(getApplicationContext(), notification);
@@ -106,6 +111,8 @@ public class PillScreenActivity extends TimedBaldActivity {
             Log.e(TAG, e.getMessage());
             e.printStackTrace();
         }
+        // Repeats until "took" or "snooze" (or the screen times out): one short sound is easy to miss.
+        ringer = new RingingScreens.Ringer(this, ringtone);
 
         Animations.makeBiggerAndSmaller(this, iv_pill, null);
         scheduleNextReminder();
@@ -114,22 +121,21 @@ public class PillScreenActivity extends TimedBaldActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        if (ringtone != null)
-            ringtone.play();
+        if (ringer != null)
+            ringer.start();
     }
 
     @Override
     protected void onStop() {
-        if (ringtone != null)
-            ringtone.stop();
-
+        if (ringer != null)
+            ringer.stop();
         super.onStop();
     }
 
     @Override
     protected void onDestroy() {
-        if (ringtone != null)
-            ringtone.stop();
+        if (ringer != null)
+            ringer.stop();
         super.onDestroy();
     }
 
@@ -162,8 +168,11 @@ public class PillScreenActivity extends TimedBaldActivity {
         return D.MINUTE * 2;
     }
 
+    /**
+     * None: a reminder that rings must always show (see AlarmScreenActivity).
+     */
     @Override
     protected int requiredPermissions() {
-        return PERMISSION_SYSTEM_ALERT_WINDOW;
+        return PERMISSION_NONE;
     }
 }

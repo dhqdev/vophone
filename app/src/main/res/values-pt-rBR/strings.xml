@@ -419,6 +419,7 @@
     <string name="ongoing_call">Ligação em andamento</string>
     <string name="tap_to_return_to_call">Toque para voltar para a ligação</string>
     <string name="calls_channel">Ligações</string>
+    <string name="alarms_channel">Alarmes e lembretes de remédio</string>
     <string name="mute_turn_on">Mudo</string>
     <string name="mute_turn_off">Mudo LIGADO</string>
     <string name="muted_hint">Mudo: a outra pessoa não te ouve</string>

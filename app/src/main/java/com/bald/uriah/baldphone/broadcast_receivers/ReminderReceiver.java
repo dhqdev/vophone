@@ -25,6 +25,8 @@ import com.bald.uriah.baldphone.activities.pills.PillScreenActivity;
 import com.bald.uriah.baldphone.databases.reminders.Reminder;
 import com.bald.uriah.baldphone.databases.reminders.ReminderScheduler;
 import com.bald.uriah.baldphone.databases.reminders.RemindersDatabase;
+import com.bald.uriah.baldphone.R;
+import com.bald.uriah.baldphone.utils.RingingScreens;
 
 /**
  * the middle man between the {@link ReminderScheduler} and {@link PillScreenActivity}.
@@ -44,9 +46,8 @@ public class ReminderReceiver extends BroadcastReceiver {
         }
 
         final Context appContext = context.getApplicationContext();
-        appContext.startActivity(new Intent(appContext, PillScreenActivity.class)
-                .putExtra(Reminder.REMINDER_KEY_VIA_INTENTS, id)
-                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        );
+        RingingScreens.open(appContext,
+                new Intent(appContext, PillScreenActivity.class).putExtra(Reminder.REMINDER_KEY_VIA_INTENTS, id),
+                RingingScreens.PILL_NOTIFICATION_ID, R.string.pills, reminder.getTextualContent());
     }
 }
