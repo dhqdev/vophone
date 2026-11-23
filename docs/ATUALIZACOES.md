@@ -54,6 +54,34 @@ adb install -r -d vophone-debug.apk
 
 Na próxima verificação o vophone volta para a última versão publicada.
 
+Isso só funciona enquanto o celular não recebeu uma versão com a chave privada (veja abaixo): o APK
+feito no computador usa a chave antiga. Depois disso, teste num celular que não recebe as versões do
+GitHub, ou desinstale o vophone antes (no modo quiosque: desligue o quiosque e remova o administrador primeiro).
+
+## Chave de assinatura
+
+Até a v1.0.2 as versões eram assinadas só com `app/vophone-debug.keystore`, que está no repositório:
+qualquer pessoa conseguiria montar um APK com ela e instalar por cima do vophone de um celular.
+
+Quando os dois segredos abaixo existem no GitHub, cada versão é assinada também com a **chave privada do
+vophone**, que só existe nesses segredos (`.github/scripts/sign-release.sh`):
+
+| Segredo | O que é |
+|---|---|
+| `VOPHONE_RELEASE_KEYSTORE` | O arquivo `.p12` da chave, em base64 (uma linha) |
+| `VOPHONE_RELEASE_PASSWORD` | A senha desse arquivo |
+
+Eles ficam em GitHub > Settings > Secrets and variables > Actions > New repository secret.
+
+Ninguém precisa reinstalar: a versão leva junto a prova de que a chave antiga passou a vez para a nova
+(rotação de chave do Android, "APK Signature Scheme v3"). Um celular com Android 9 ou mais novo atualiza
+sozinho, como sempre, e a partir daí só aceita versões com a chave nova. Android 8 ou mais antigo não tem
+rotação de chave e continua vendo a chave antiga.
+
+Guarde uma cópia do `.p12` e da senha fora do GitHub (o GitHub não mostra um segredo de novo).
+Sem eles não dá mais para atualizar os celulares que já receberam a chave nova. Se os segredos sumirem,
+o GitHub recusa publicar a versão, em vez de publicar uma que os celulares recusariam.
+
 ## Segurança
 
 O vophone só baixa atualizações das Releases deste repositório. Quem conseguir publicar uma versão nele

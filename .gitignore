@@ -33,3 +33,7 @@ run.bat
 app/baldUpdates/release/app-baldUpdates-release.apk
 app/baldUpdates/release/app-release.apk
 app/baldUpdates/release/output.json
+
+# vophone release key: only in the GitHub secrets (docs/ATUALIZACOES.md), never in the repository
+*.p12
+VOPHONE_RELEASE_*.txt

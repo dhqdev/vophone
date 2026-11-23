@@ -123,8 +123,9 @@ Para instalar um APK feito no computador:
 adb install -r -d vophone-debug.apk
 ```
 
-O APK é assinado com a chave fixa `app/vophone-debug.keystore`, então qualquer build deste
-repositório atualiza o vophone já instalado. Um APK assinado com outra chave não instala por cima.
+O APK feito no computador é assinado com a chave antiga `app/vophone-debug.keystore`. Ele instala por
+cima enquanto o celular não recebeu uma versão do GitHub com a chave privada do vophone
+(veja "Chave de assinatura" em [ATUALIZACOES.md](ATUALIZACOES.md)).
 
 ## Remover o vophone de vez
 

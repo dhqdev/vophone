@@ -129,8 +129,9 @@ vophone > Configurações > Modo quiosque. Detalhes em `docs/INSTALACAO.md`.
 ## Atualizar o vophone depois
 
 Não precisa gravar o sistema de novo: o vophone do sistema se atualiza sozinho, sem perguntar, quando sai
-uma versão nova no GitHub (veja `docs/ATUALIZACOES.md`). As versões são assinadas com a mesma chave
-(`app/vophone-debug.keystore`) do vophone embutido no sistema.
+uma versão nova no GitHub (veja `docs/ATUALIZACOES.md`). O vophone embutido no sistema usa a chave antiga
+(`app/vophone-debug.keystore`); as versões do GitHub levam a prova de que ela passou a vez para a chave
+privada do vophone, então atualizam por cima dele normalmente.
 Para instalar um APK feito no computador: `adb install -r -d vophone-debug.apk`.
 
 ## Voltar ao sistema original

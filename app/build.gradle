@@ -49,6 +49,8 @@ android {
     // Fixed debug key kept in the repo, so every build (any computer / session) can update the
     // vophone already installed on the phone. As device owner, vophone cannot simply be uninstalled
     // and reinstalled with a different key.
+    // GitHub releases are signed again with vophone's private key, rotated from this one
+    // (.github/scripts/sign-release.sh, docs/ATUALIZACOES.md), so phones update without reinstalling.
     signingConfigs {
         debug {
             storeFile file('vophone-debug.keystore')
