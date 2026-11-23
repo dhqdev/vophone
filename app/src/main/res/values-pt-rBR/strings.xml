@@ -50,7 +50,7 @@
     <string name="allow">Permitir</string>
     <string name="already_setted">Já definido!\nClique aqui para alterar</string>
     <string name="an_error_has_occurred">Ocorreu um erro!</string>
-    <string name="and_welcome_to_baldphone">Seja bem-vindo(a) ao Baldphone!</string>
+    <string name="and_welcome_to_baldphone">Seja bem-vindo(a) ao vophone!</string>
 
     <string name="apps">Aplicativos</string>
     <string name="are_you_sure_you_want_to_delete___">Tem certeza que deseja apagar %s?</string>
@@ -67,7 +67,7 @@
     <string name="call">Ligar</string>
     <string name="calling">Chamadas</string>
 
-    <string name="call_log">Registo de Chamadas:</string>
+    <string name="call_log">Histórico de Ligações:</string>
     <string name="call_subtext">Essa permissão é necessária para conseguir realizar chamadas.</string>
     <string name="camera">Câmera</string>
     <string name="camera_subtext">Essa permissão é necessária para ligar a lanterna.</string>
@@ -84,7 +84,7 @@
     <string name="clear">Apagar</string>
     <string name="clear_cache">Apagar Cache</string>
     <string name="clear_data">Apagar Todos os Dados</string>
-    <string name="clear_data_subtext">Tem a certeza que deseja apagar todos os dados?</string>
+    <string name="clear_data_subtext">Tem certeza de que deseja apagar todos os dados?</string>
     <string name="clear_data_subtext2">100%?</string>
     <string name="clear_data_subtext3">Certeza absoluta?\nPressionar "Sim" apagará todos os dados do aplicativo!</string>
     <string name="clock">Relógio</string>
@@ -93,7 +93,7 @@
     <string name="contact_must_has_name">O contato precisa ter um nome!</string>
     <string name="contact_not_created">Contato não criado!</string>
     <string name="contacts">Contatos</string>
-    <string name="contacts_read_subtext">Essa permissão é necessária para vizualizar os contatos.</string>
+    <string name="contacts_read_subtext">Essa permissão é necessária para visualizar os contatos.</string>
     <string name="contacts_subtext">Essa permissão é necessária para salvar novos contatos.</string>
     <string name="crash">Oops!\nO vophone encontrou um problema e vai reiniciar agora.</string>
     <string name="current_time">Hora Atual</string>
@@ -122,7 +122,7 @@
     </string>
     <string name="font_size">Tamanho da fonte</string>
     <string name="friday">Sexta-feira</string>
-    <string name="have_hard_time_using_the_phone_s_keyboard_use_baldphone_s_big_keyboard_instead">Dificuldades ao utilizar o teclado do seu telefone? Utilize o teclado GRANDE do Baldphone!</string>
+    <string name="have_hard_time_using_the_phone_s_keyboard_use_baldphone_s_big_keyboard_instead">Dificuldades ao utilizar o teclado do seu telefone? Utilize o teclado GRANDE do vophone!</string>
     <string name="hello">Olá</string>
     <string name="help">Tutorial em Vídeo</string>
     <string name="hide">Ocultar</string>
@@ -199,7 +199,7 @@
     <string name="remove_from_home">Remover da Página Inicial</string>
     <string name="remove_from_sos">Remover do SOS</string>
     <string name="remove_shortcut">Remover atalho</string>
-    <string name="removed_all_alarms">Remover todos os alarmes!</string>
+    <string name="removed_all_alarms">Todos os alarmes foram removidos!</string>
     <string name="repeats_every_day">Todos os dias</string>
     <string name="right_handed">Destro</string>
 
@@ -209,9 +209,9 @@
     <string name="set_default_dialer">Definir como aplicativo de Chamadas padrão</string>
     <string name="set_default_dialer_subtext">O vophone precisa ser definido como aplicativo de Chamadas padrão.</string>
     <string name="set_home_screen">Definir Página Inicial</string>
-    <string name="set_home_screen_subtext">Para utilizar o vophone, é necessário definí-lo como Página Inicial padrão.\nEssa ação é reversível e pode ser alterada nas Configurações.</string>
+    <string name="set_home_screen_subtext">Para utilizar o vophone, é necessário defini-lo como Página Inicial padrão.\nEssa ação é reversível e pode ser alterada nas Configurações.</string>
     <string name="set_keyboard">Definir Teclado</string>
-    <string name="setting_does_not_exist">Definição Não Existente</string>
+    <string name="setting_does_not_exist">Esta configuração não existe neste celular.</string>
     <string name="settings">Configurações</string>
     <string name="settings_permission">Acesso às Configurações</string>
     <string name="share">Compartilhar</string>
@@ -220,14 +220,14 @@
     <string name="share_baldphone">Compartilhar o vophone</string>
     <string name="share_contact">Compartilhar Contato</string>
     <string name="share_differently">Compartilhar através de outro aplicativo</string>
-    <string name="share_via_whatsapp">Compartilhar pelo Whatsapp</string>
+    <string name="share_via_whatsapp">Compartilhar pelo WhatsApp</string>
     <string name="shift">shift</string>
     <string name="show">Mostrar</string>
     <string name="small">Pequena</string>
-    <string name="snooze">Repetição de Alarme</string>
+    <string name="snooze">Soneca</string>
     <string name="sos">SOS</string>
     <string name="sos_is_full">O SOS está cheio!</string>
-    <string name="sos_is_full_subtext">O SOS está cheio!Por favor, remova outros contatos do SOS antes de adicionar novos.</string>
+    <string name="sos_is_full_subtext">O SOS está cheio! Por favor, remova outros contatos do SOS antes de adicionar novos.</string>
     <string name="speak">Falar</string>
     <string name="speech_to_text">Fala para Texto</string>
     <string name="strong_hand">Mão Dominante</string>
@@ -256,8 +256,8 @@
 
     <string name="voice_mail">Mensagem de voz</string>
     <string name="wednesday">Quarta-feira</string>
-    <string name="whatsapp">Whatsapp</string>
-    <string name="wifi">Wi-fi</string>
+    <string name="whatsapp">WhatsApp</string>
+    <string name="wifi">Wi-Fi</string>
     <string name="will_repeat_only_once">Tocará apenas uma vez!</string>
     <string name="write">Salvar</string>
     <string name="write_contacts">Salvar Contatos</string>
@@ -269,9 +269,8 @@
     <string name="no_alarms">Nenhum Alarme\nCrie um tocando em \n\"Adicionar Alarme\"\nou\n\"Adicionar Cronômetro\"</string>
     <string name="no_pills">Nenhum remédio.\nAdicione um tocando em \n\"Adicionar Remédio\"</string>
     <string name="clear_all_notifications">Limpar Todas as Notificações</string>
-    <string name="clear_cache_subtext">Tem a certeza que deseja apagar o cache?\nOs Aplicativos e Atalhos também serão removidos!
-    </string>
-    <string name="permissions_calm">Olá, o vophone necessita das seguintes permissões para poder substituir a interface do telefone. Algumas soam assustadoramente, mas nenhum dado será coletado e não causará problemas em seu telefone. Pressione OK para conceder as permissões ou Não para saír do vophone.</string>
+    <string name="clear_cache_subtext">Tem certeza de que deseja apagar o cache?\nOs aplicativos e atalhos também serão removidos!</string>
+    <string name="permissions_calm">Olá, o vophone precisa das seguintes permissões para poder substituir a interface do telefone. Algumas parecem assustadoras, mas nenhum dado é coletado e elas não causam problemas no seu telefone. Toque em OK para conceder as permissões ou em Não para sair do vophone.</string>
     <string name="pending_update">Atualização Pendente</string>
     <string name="download">Baixar</string>
     <string name="install_updates">Instalar Atualizações</string>
@@ -282,10 +281,10 @@
     <string name="new_updates_are_ready_to_be_downloaded">Existem novas atualizações.</string>
     <string name="install">Instalar</string>
     <string name="data_warning">Aviso de Dados Móveis</string>
-    <string name="data_warning_subtext">Olá, você não está ligado ao Wi-Fi. \n O tamanho do download é de 3MB \nEste downloand poderá ter custos adicionais de Dados Móveis\n Deseja continuar?</string>
-    <string name="update_message_is_corrupted">A mensagem de atualização contem um erro.</string>
+    <string name="data_warning_subtext">Olá, você não está conectado ao Wi-Fi.\nO download tem cerca de 3MB\ne pode gastar seus dados móveis.\nDeseja continuar?</string>
+    <string name="update_message_is_corrupted">A mensagem de atualização contém um erro.</string>
     <string name="check_for_updates">Procurar atualizações</string>
-    <string name="could_not_connect_to_server">Não foi possível conectar-se ao servior!</string>
+    <string name="could_not_connect_to_server">Não foi possível conectar ao servidor!</string>
     <string name="could_not_connect_to_internet">Não foi possível conectar-se à internet!</string>
     <string name="could_not_start_the_download">Não foi possível iniciar o download!</string>
     <string name="downloaded_update_file_could_not_be_deleted">O arquivo baixado não pôde ser apagado!</string>
@@ -353,7 +352,7 @@
     <string name="no_delay">Sem atraso</string>
     <string name="scrolling">Rolagem</string>
     <string name="arrows">Setas</string>
-    <string name="swipe">Toque</string>
+    <string name="swipe">Deslize</string>
     <string name="_long">Longo</string>
     <string name="_short">Curto</string>
     <string name="do_you_want_to_save_your_changes">Gostaria de salvar as mudanças?</string>

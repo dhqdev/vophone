@@ -26,6 +26,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.graphics.Point;
 import android.graphics.drawable.AnimatedVectorDrawable;
@@ -208,7 +209,7 @@ public class HomeScreenActivity extends BaldActivity {
         } catch (Exception e) {
             Log.e(TAG, S.str(e.getMessage()));
             e.printStackTrace();
-            BaldToast.from(this).setType(BaldToast.TYPE_ERROR).setText("Could not start Notification Listener Service!").show();
+            // Nothing the user can do about it: the notifications icon just stays empty.
         }
         new UpdateApps(this).execute(this.getApplicationContext());
         lowBatteryAlert = sharedPreferences.getBoolean(BPrefs.LOW_BATTERY_ALERT_KEY, BPrefs.LOW_BATTERY_ALERT_DEFAULT_VALUE);
@@ -301,9 +302,6 @@ public class HomeScreenActivity extends BaldActivity {
                                 return true;
                             })
                             .show();
-                } else if (percent > 99 && Math.random() < 0.1) {
-                    onStartCounter = 0;
-                    S.shareBaldPhone(this);
                 } else if (percent > 95) {
                     //noinspection ConstantConditions
                     if (BuildConfig.FLAVOR.equals("baldUpdates"))
@@ -450,14 +448,16 @@ public class HomeScreenActivity extends BaldActivity {
         }
     }
 
+    /**
+     * @return true if vophone is the home screen (also when the ROM or kiosk mode made it so,
+     * which the old "preferred activities" check did not see, so it kept asking).
+     */
     private boolean isActivityDefault() {
-        final List<IntentFilter> filters = new ArrayList<>();
-        final ComponentName myComponentName = getComponentName();
-        final String myPackageName = myComponentName.getPackageName();
-        final List<ComponentName> activities = new ArrayList<>();
-        final PackageManager packageManager = getPackageManager();
-        packageManager.getPreferredActivities(filters, activities, myPackageName);
-        return (activities.contains(myComponentName));
+        if (KioskManager.isEnabled(this))
+            return true;
+        final ResolveInfo home = getPackageManager().resolveActivity(
+                new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME), PackageManager.MATCH_DEFAULT_ONLY);
+        return home != null && home.activityInfo != null && getPackageName().equals(home.activityInfo.packageName);
     }
 
     public void displaySpeechRecognizer() {

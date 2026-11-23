@@ -51,7 +51,7 @@
     <string name="allow">Allow</string>
     <string name="already_setted">Already Set!\nClick here to change to it</string>
     <string name="an_error_has_occurred">An error has occurred!</string>
-    <string name="and_welcome_to_baldphone">and welcome to Baldphone</string>
+    <string name="and_welcome_to_baldphone">and welcome to vophone</string>
 
     <string name="apps">Apps</string>
     <string name="are_you_sure_you_want_to_delete___">Are you sure you want to delete %s?</string>
@@ -128,7 +128,7 @@
     <string name="font_size">Font Size</string>
     <string name="friday">Friday</string>
     <string name="have_hard_time_using_the_phone_s_keyboard_use_baldphone_s_big_keyboard_instead">Having a hard time using
-        the phone\'s keyboard? use Baldphone\'s BIG keyboard instead!
+        the phone\'s keyboard? use vophone\'s BIG keyboard instead!
     </string>
     <string name="hello">Hello</string>
     <string name="help">Video Tutorial</string>
@@ -140,7 +140,7 @@
     <string name="internet">Internet</string>
     <string name="invoked_in">Invoked in:</string>
     <string name="it_s_highly_recommended_to_use_baldphone_s_home_screen_as_the_default_home_launcher">One last
-        thing:\nIt\'s highly recommended to use Baldphone\'s home screen as the default home launcher
+        thing:\nIt\'s highly recommended to use vophone\'s home screen as the default home launcher
     </string>
     <string name="language">language</string>
     <string name="language_settings">Language</string>
