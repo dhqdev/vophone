@@ -131,10 +131,11 @@ jobs:
           distribution: temurin
           java-version: '11'
 
-      - name: Build the APK
+      # A failing test stops the release: phones never receive that version.
+      - name: Test and build the APK
         run: |
           chmod +x ./gradlew
-          ./gradlew --no-daemon assembleFDroidDebug -PvophoneVersion="${{ needs.version.outputs.version }}"
+          ./gradlew --no-daemon testFDroidDebugUnitTest assembleFDroidDebug -PvophoneVersion="${{ needs.version.outputs.version }}"
           cp app/build/outputs/apk/fDroid/debug/app-fDroid-debug.apk "vophone-${{ needs.version.outputs.tag }}.apk"
 
       - name: Write the release notes

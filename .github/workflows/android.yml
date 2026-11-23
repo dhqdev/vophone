@@ -26,10 +26,18 @@ jobs:
           distribution: temurin
           java-version: '11'
 
-      - name: Build the APK
+      # app/src/test: keyboards, Portuguese texts, version numbers and ROM permissions.
+      - name: Test and build the APK
         run: |
           chmod +x ./gradlew
-          ./gradlew --no-daemon assembleFDroidDebug
+          ./gradlew --no-daemon testFDroidDebugUnitTest assembleFDroidDebug
+
+      - name: Keep the test report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-report
+          path: app/build/reports/tests/
 
       - uses: actions/upload-artifact@v4
         with:
