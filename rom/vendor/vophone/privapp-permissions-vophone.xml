@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  vophone is a privileged app in the vophone ROM. The only privileged permission it uses:
-  INSTALL_PACKAGES, so it updates itself from the GitHub releases without a confirmation screen.
+  vophone is a privileged app in the vophone ROM. Its privileged permissions:
+  - INSTALL_PACKAGES: it updates itself from the GitHub releases without a confirmation screen.
+  - START_ACTIVITIES_FROM_BACKGROUND: alarm and pill reminder screens open by themselves
+    (no "appear on top" permission screen for the user).
+  Every privileged permission in app/src/main/AndroidManifest.xml must be listed here:
+  with ro.control_privapp_permissions=enforce, a missing one stops the phone from booting.
   -->
 <permissions>
     <privapp-permissions package="com.bald.uriah.baldphone">
         <permission name="android.permission.INSTALL_PACKAGES" />
+        <permission name="android.permission.START_ACTIVITIES_FROM_BACKGROUND" />
     </privapp-permissions>
 </permissions>

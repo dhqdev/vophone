@@ -10,5 +10,7 @@
         <permission name="android.permission.WRITE_CALL_LOG" fixed="false" />
         <permission name="android.permission.CAMERA" fixed="false" />
         <permission name="android.permission.WRITE_EXTERNAL_STORAGE" fixed="false" />
+        <!-- Android 13+: alarm and pill reminder notifications -->
+        <permission name="android.permission.POST_NOTIFICATIONS" fixed="false" />
     </exception>
 </exceptions>

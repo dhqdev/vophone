@@ -44,6 +44,14 @@
     <uses-permission android:name="android.permission.READ_CALL_LOG" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
+    <!-- Android 13+: the ringing notification of alarms and pill reminders (see utils/RingingScreens.java) -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- Only granted when vophone is built into the vophone ROM (privileged app): alarm and pill screens
+         open by themselves from the background, without the "appear on top" permission screen.
+         It must stay listed in rom/vendor/vophone/privapp-permissions-vophone.xml. -->
+    <uses-permission
+        android:name="android.permission.START_ACTIVITIES_FROM_BACKGROUND"
+        tools:ignore="ProtectedPermissions" />
 
 
     <uses-permission

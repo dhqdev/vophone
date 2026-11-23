@@ -35,6 +35,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bald.uriah.baldphone.BuildConfig;
 import com.bald.uriah.baldphone.R;
+import com.bald.uriah.baldphone.utils.RingingScreens;
 import com.bald.uriah.baldphone.utils.BDB;
 import com.bald.uriah.baldphone.utils.BDialog;
 import com.bald.uriah.baldphone.utils.BPrefs;
@@ -199,7 +200,8 @@ public class PermissionActivity extends BaldActivity {
         }
         if ((requiredPermissions & PERMISSION_SYSTEM_ALERT_WINDOW) != 0) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                if (!Settings.canDrawOverlays(this)) {
+                // Only needed so alarms can open their screen: not asked when vophone can already do it (ROM, kiosk).
+                if (!RingingScreens.canStartFromBackground(this)) {
                     final Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
                             Uri.parse("package:" + getPackageName()));
                     permissionItemList.add(

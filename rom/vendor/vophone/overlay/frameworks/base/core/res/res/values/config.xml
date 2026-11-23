@@ -7,4 +7,10 @@
     <!-- Back / Home buttons at the bottom of the screen instead of swipe gestures
          (0 = 3 buttons). Much easier for elderly users. -->
     <integer name="config_navBarInteractionMode">0</integer>
+
+    <!-- vophone reads notifications to show the "new messages" icon on its home screen,
+         and switches between sound / vibrate / silent from its home screen ("Do not disturb" access).
+         Granted from the first boot, so the user never sees these two Android settings screens. -->
+    <string name="config_defaultListenerAccessPackages" translatable="false">com.bald.uriah.baldphone</string>
+    <string name="config_defaultDndAccessPackages" translatable="false">com.bald.uriah.baldphone</string>
 </resources>

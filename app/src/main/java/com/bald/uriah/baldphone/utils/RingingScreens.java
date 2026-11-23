@@ -94,7 +94,10 @@ public final class RingingScreens {
             notificationManager.cancel(notificationId);
     }
 
-    private static boolean canStartFromBackground(Context context) {
+    /**
+     * @return true if vophone may open a screen while it is in the background (see the class comment).
+     */
+    public static boolean canStartFromBackground(Context context) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q)
             return true;
         if (Settings.canDrawOverlays(context))

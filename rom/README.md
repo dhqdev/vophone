@@ -11,7 +11,9 @@ Android (AOSP). O vophone usa o **LineageOS**, o mais usado deles, como base e m
 
 - **Sem** a interface do fabricante, **sem** a tela inicial padrão e **sem** o app de telefone padrão.
 - O vophone vem dentro do sistema como tela inicial e como telefone (tela de ligação com botões grandes).
-- As permissões do vophone já vêm concedidas: não aparece nenhuma tela de "Permitir?".
+- As permissões do vophone já vêm concedidas: não aparece nenhuma tela de "Permitir?". Isso inclui
+  notificações, acesso às notificações (ícone de mensagens novas), "Não perturbe" (botão de som da tela
+  inicial) e abrir a tela do alarme e do remédio sozinho, sem a permissão "sobrepor a outros apps".
 - Configurações do sistema já ajustadas para idosos:
   - sem tela de bloqueio de arrastar: apertou o botão de ligar, já aparece o vophone;
   - botões Voltar / Início embaixo da tela, em vez de gestos de arrastar;
@@ -35,7 +37,8 @@ Os arquivos estão em `vendor/vophone/`:
 | `Android.bp` | Coloca o vophone no sistema e remove a tela inicial e o telefone padrão |
 | `vophone.mk` | Liga tudo isso ao produto do celular |
 | `default-permissions-vophone.xml` | Permissões já concedidas |
-| `overlay/.../config.xml` | vophone como app de telefone do sistema |
+| `privapp-permissions-vophone.xml` | Permissões de app do sistema: atualizar sozinho e abrir alarmes sozinho |
+| `overlay/.../config.xml` | vophone como app de telefone do sistema, com acesso às notificações e ao "Não perturbe" |
 | `overlay/.../config.xml` (navegação) | Botões Voltar / Início em vez de gestos |
 | `overlay/.../defaults.xml` | Padrões do sistema para idosos (lista acima) |
 
@@ -140,4 +143,7 @@ Baixe o sistema original do fabricante para o modelo e grave com a ferramenta of
 Estes arquivos foram escritos para LineageOS 20 a 22 (Android 13 a 15). **Ainda não foram compilados
 nem testados em um aparelho**: o primeiro build para o modelo do celular pode precisar de ajustes.
 Se a compilação reclamar de um nome na lista `overrides` do `Android.bp`, apague aquela linha.
+Se o celular não passar da animação de início depois de gravar, rode `adb logcat | grep -i privapp`: toda
+permissão de app do sistema pedida no `AndroidManifest.xml` precisa estar em `privapp-permissions-vophone.xml`.
+Por isso compile o sistema sempre com o APK do mesmo código (o `build-rom.sh` já faz assim).
 Sem a tela inicial padrão, o botão de apps recentes deixa de fazer alguma coisa (de propósito).

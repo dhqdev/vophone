@@ -42,6 +42,7 @@ import androidx.core.app.ActivityCompat;
 
 import com.bald.uriah.baldphone.BuildConfig;
 import com.bald.uriah.baldphone.R;
+import com.bald.uriah.baldphone.utils.RingingScreens;
 import com.bald.uriah.baldphone.utils.BDB;
 import com.bald.uriah.baldphone.utils.BDialog;
 import com.bald.uriah.baldphone.utils.BPrefs;
@@ -170,9 +171,9 @@ public abstract class BaldActivity extends AppCompatActivity implements SensorEv
                 return false;
         }
         if ((requiredPermissions & PERMISSION_SYSTEM_ALERT_WINDOW) != 0) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
-                if (!Settings.canDrawOverlays(activity))
-                    return false;
+            // Only needed so alarms can open their screen; the vophone ROM and kiosk mode already allow it.
+            if (!RingingScreens.canStartFromBackground(activity))
+                return false;
         }
         if ((requiredPermissions & PERMISSION_REQUEST_INSTALL_PACKAGES) != 0) {
             return
