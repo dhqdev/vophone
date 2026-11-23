@@ -17,6 +17,7 @@
       The info part takes the space left by the buttons, so the buttons are always fully visible.
       -->
     <LinearLayout
+        android:id="@+id/call_info"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -60,6 +61,100 @@
             android:textSize="28dp" />
     </LinearLayout>
 
+    <!-- Number keys for menus like "press 1 for...". Takes the place of the caller info while open. -->
+    <LinearLayout
+        android:id="@+id/call_keypad"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/tv_dtmf"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="start"
+            android:gravity="center"
+            android:maxLines="1"
+            android:minHeight="44dp"
+            android:textColor="?bald_text_on_background"
+            android:textSize="34dp"
+            android:textStyle="bold" />
+
+        <LinearLayout style="@style/CallKeypadRow">
+
+            <Button
+                android:id="@+id/dtmf_1"
+                style="@style/CallKeypadKey"
+                android:text="1" />
+
+            <Button
+                android:id="@+id/dtmf_2"
+                style="@style/CallKeypadKey"
+                android:text="2" />
+
+            <Button
+                android:id="@+id/dtmf_3"
+                style="@style/CallKeypadKey"
+                android:text="3" />
+        </LinearLayout>
+
+        <LinearLayout style="@style/CallKeypadRow">
+
+            <Button
+                android:id="@+id/dtmf_4"
+                style="@style/CallKeypadKey"
+                android:text="4" />
+
+            <Button
+                android:id="@+id/dtmf_5"
+                style="@style/CallKeypadKey"
+                android:text="5" />
+
+            <Button
+                android:id="@+id/dtmf_6"
+                style="@style/CallKeypadKey"
+                android:text="6" />
+        </LinearLayout>
+
+        <LinearLayout style="@style/CallKeypadRow">
+
+            <Button
+                android:id="@+id/dtmf_7"
+                style="@style/CallKeypadKey"
+                android:text="7" />
+
+            <Button
+                android:id="@+id/dtmf_8"
+                style="@style/CallKeypadKey"
+                android:text="8" />
+
+            <Button
+                android:id="@+id/dtmf_9"
+                style="@style/CallKeypadKey"
+                android:text="9" />
+        </LinearLayout>
+
+        <LinearLayout style="@style/CallKeypadRow">
+
+            <Button
+                android:id="@+id/dtmf_star"
+                style="@style/CallKeypadKey"
+                android:text="*" />
+
+            <Button
+                android:id="@+id/dtmf_0"
+                style="@style/CallKeypadKey"
+                android:text="0" />
+
+            <Button
+                android:id="@+id/dtmf_hash"
+                style="@style/CallKeypadKey"
+                android:text="#" />
+        </LinearLayout>
+    </LinearLayout>
+
     <LinearLayout
         android:id="@+id/incoming_buttons"
         android:layout_width="match_parent"
@@ -94,14 +189,47 @@
         android:orientation="vertical"
         android:visibility="gone">
 
+        <!-- Speaker, mute and keypad side by side -->
+        <LinearLayout
+            android:id="@+id/call_actions"
+            android:layout_width="match_parent"
+            android:layout_height="112dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/bt_speaker"
+                style="@style/CallSmallButton"
+                android:background="@drawable/call_button_gray"
+                android:drawableTop="@drawable/ic_call_speaker"
+                android:text="@string/speaker_turn_on" />
+
+            <Button
+                android:id="@+id/bt_mute"
+                style="@style/CallSmallButton"
+                android:layout_marginStart="10dp"
+                android:background="@drawable/call_button_gray"
+                android:drawableTop="@drawable/ic_call_mute"
+                android:text="@string/mute_turn_on" />
+
+            <Button
+                android:id="@+id/bt_keypad"
+                style="@style/CallSmallButton"
+                android:layout_marginStart="10dp"
+                android:background="@drawable/call_button_gray"
+                android:drawableTop="@drawable/ic_call_dialpad"
+                android:text="@string/call_keypad_open" />
+        </LinearLayout>
+
+        <!-- Only while the call is on hold (for example after answering a second call) -->
         <Button
-            android:id="@+id/bt_speaker"
+            android:id="@+id/bt_resume"
             style="@style/CallButton"
-            android:layout_height="96dp"
-            android:background="@drawable/call_button_gray"
-            android:drawableStart="@drawable/ic_volume_up_white"
-            android:text="@string/speaker_turn_on"
-            android:textSize="28dp" />
+            android:layout_height="104dp"
+            android:background="@drawable/call_button_green"
+            android:drawableStart="@drawable/ic_call_white"
+            android:text="@string/resume_call"
+            android:textSize="30dp"
+            android:visibility="gone" />
 
         <Button
             android:id="@+id/bt_hangup"

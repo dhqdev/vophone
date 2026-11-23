@@ -192,6 +192,43 @@ public final class CallManager {
             inCallService.setAudioRoute(on ? CallAudioState.ROUTE_SPEAKER : CallAudioState.ROUTE_WIRED_OR_EARPIECE);
     }
 
+    /**
+     * @return true if the microphone is off: the other person does not hear the user.
+     */
+    @SuppressWarnings("deprecation")
+    public static boolean isMuted() {
+        if (inCallService == null)
+            return false;
+        final CallAudioState audioState = inCallService.getCallAudioState();
+        return audioState != null && audioState.isMuted();
+    }
+
+    public static void setMuted(boolean muted) {
+        if (inCallService != null)
+            inCallService.setMuted(muted);
+    }
+
+    /**
+     * Brings back a call that is on hold (for example after a second call was answered and hung up).
+     */
+    public static void resume(Call call) {
+        if (getState(call) == Call.STATE_HOLDING)
+            call.unhold();
+    }
+
+    /**
+     * Number keys during a call, for menus like "press 1 for...": the tone plays while the key is pressed.
+     */
+    public static void startDtmf(Call call, char digit) {
+        if (getState(call) == Call.STATE_ACTIVE)
+            call.playDtmfTone(digit);
+    }
+
+    public static void stopDtmf(Call call) {
+        call.stopDtmfTone();
+    }
+
+
     public static boolean isDefaultDialer(Context context) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M)
             return false;

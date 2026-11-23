@@ -418,6 +418,12 @@
     <string name="ongoing_call">Ligação em andamento</string>
     <string name="tap_to_return_to_call">Toque para voltar para a ligação</string>
     <string name="calls_channel">Ligações</string>
+    <string name="mute_turn_on">Mudo</string>
+    <string name="mute_turn_off">Mudo LIGADO</string>
+    <string name="muted_hint">Mudo: a outra pessoa não te ouve</string>
+    <string name="call_keypad_open">Teclado</string>
+    <string name="call_keypad_close">Fechar teclado</string>
+    <string name="resume_call">Voltar para a ligação</string>
     <string name="already_default_dialer">O vophone já é o aplicativo de telefone!</string>
     <string name="use_vophone_for_calls">Ligações com botões grandes</string>
     <string name="kiosk_mode">Modo quiosque (travar o celular)</string>

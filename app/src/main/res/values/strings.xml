@@ -442,6 +442,12 @@
     <string name="ongoing_call">Call in progress</string>
     <string name="tap_to_return_to_call">Tap to return to the call</string>
     <string name="calls_channel">Calls</string>
+    <string name="mute_turn_on">Mute</string>
+    <string name="mute_turn_off">Mute ON</string>
+    <string name="muted_hint">Muted: the other person cannot hear you</string>
+    <string name="call_keypad_open">Keypad</string>
+    <string name="call_keypad_close">Close keypad</string>
+    <string name="resume_call">Resume the call</string>
     <string name="already_default_dialer">vophone is already the phone app!</string>
     <string name="use_vophone_for_calls">Big-button call screen</string>
     <string name="kiosk_mode">Kiosk mode (lock the phone)</string>

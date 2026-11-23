@@ -33,6 +33,7 @@ import android.telecom.PhoneAccountHandle;
 import android.telecom.TelecomManager;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -63,9 +64,17 @@ public class CallActivity extends AppCompatActivity implements CallManager.Liste
     private static final int FINISH_DELAY_MS = 1500;
     private final Handler handler = new Handler(Looper.getMainLooper());
     private ImageView iv_photo;
-    private TextView tv_name, tv_number, tv_status;
-    private View incomingButtons, ongoingButtons;
-    private Button bt_speaker;
+    private static final int[] DTMF_KEY_IDS = {
+            R.id.dtmf_0, R.id.dtmf_1, R.id.dtmf_2, R.id.dtmf_3, R.id.dtmf_4, R.id.dtmf_5,
+            R.id.dtmf_6, R.id.dtmf_7, R.id.dtmf_8, R.id.dtmf_9, R.id.dtmf_star, R.id.dtmf_hash};
+    private static final char[] DTMF_KEYS = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '*', '#'};
+    private TextView tv_name, tv_number, tv_status, tv_dtmf;
+    private View incomingButtons, ongoingButtons, callInfo, callKeypad, callActions;
+    private Button bt_speaker, bt_mute, bt_keypad, bt_resume;
+    private boolean keypadShown;
+    private final StringBuilder dtmfDigits = new StringBuilder();
+    @Nullable
+    private Call keypadCall;
     @Nullable
     private PowerManager.WakeLock proximityWakeLock;
     @Nullable
@@ -104,9 +113,16 @@ public class CallActivity extends AppCompatActivity implements CallManager.Liste
         tv_name = findViewById(R.id.tv_name);
         tv_number = findViewById(R.id.tv_number);
         tv_status = findViewById(R.id.tv_status);
+        tv_dtmf = findViewById(R.id.tv_dtmf);
         incomingButtons = findViewById(R.id.incoming_buttons);
         ongoingButtons = findViewById(R.id.ongoing_buttons);
+        callInfo = findViewById(R.id.call_info);
+        callKeypad = findViewById(R.id.call_keypad);
+        callActions = findViewById(R.id.call_actions);
         bt_speaker = findViewById(R.id.bt_speaker);
+        bt_mute = findViewById(R.id.bt_mute);
+        bt_keypad = findViewById(R.id.bt_keypad);
+        bt_resume = findViewById(R.id.bt_resume);
 
         findViewById(R.id.bt_answer).setOnClickListener(v -> {
             final Call call = CallManager.getPrimaryCall();
@@ -121,6 +137,14 @@ public class CallActivity extends AppCompatActivity implements CallManager.Liste
         findViewById(R.id.bt_decline).setOnClickListener(hangUp);
         findViewById(R.id.bt_hangup).setOnClickListener(hangUp);
         bt_speaker.setOnClickListener(v -> CallManager.setSpeaker(!CallManager.isSpeakerOn()));
+        bt_mute.setOnClickListener(v -> CallManager.setMuted(!CallManager.isMuted()));
+        bt_keypad.setOnClickListener(v -> showKeypad(!keypadShown));
+        bt_resume.setOnClickListener(v -> {
+            final Call call = CallManager.getPrimaryCall();
+            if (call != null)
+                CallManager.resume(call);
+        });
+        setupKeypad();
 
         final PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
         if (powerManager != null && powerManager.isWakeLockLevelSupported(PowerManager.PROXIMITY_SCREEN_OFF_WAKE_LOCK))
@@ -151,9 +175,46 @@ public class CallActivity extends AppCompatActivity implements CallManager.Liste
 
     @Override
     public void onBackPressed() {
+        if (keypadShown) {
+            showKeypad(false);
+            return;
+        }
         // Do not leave the call screen by mistake while a call is going on.
         if (!CallManager.hasOngoingCall())
             super.onBackPressed();
+    }
+
+    /**
+     * The tone plays while the key is held down, like on any phone.
+     */
+    private void setupKeypad() {
+        for (int i = 0; i < DTMF_KEY_IDS.length; i++) {
+            final char digit = DTMF_KEYS[i];
+            findViewById(DTMF_KEY_IDS[i]).setOnTouchListener((v, event) -> {
+                final Call call = CallManager.getPrimaryCall();
+                if (call == null)
+                    return false;
+                switch (event.getActionMasked()) {
+                    case MotionEvent.ACTION_DOWN:
+                        CallManager.startDtmf(call, digit);
+                        dtmfDigits.append(digit);
+                        tv_dtmf.setText(dtmfDigits);
+                        break;
+                    case MotionEvent.ACTION_UP:
+                    case MotionEvent.ACTION_CANCEL:
+                        CallManager.stopDtmf(call);
+                        break;
+                }
+                return false; // keep the pressed look and the click sound
+            });
+        }
+    }
+
+    private void showKeypad(boolean show) {
+        keypadShown = show;
+        callKeypad.setVisibility(show ? View.VISIBLE : View.GONE);
+        callInfo.setVisibility(show ? View.GONE : View.VISIBLE);
+        bt_keypad.setText(show ? R.string.call_keypad_close : R.string.call_keypad_open);
     }
 
     private void updateUi() {
@@ -163,7 +224,13 @@ public class CallActivity extends AppCompatActivity implements CallManager.Liste
             return;
         }
         bindCaller(call);
+        if (keypadCall != call) { // a different call: start with an empty keypad
+            keypadCall = call;
+            dtmfDigits.setLength(0);
+            tv_dtmf.setText(dtmfDigits);
+        }
         final int state = CallManager.getState(call);
+        final boolean muted = CallManager.isMuted();
         boolean keepScreenOn = false;
         switch (state) {
             case Call.STATE_RINGING:
@@ -178,16 +245,19 @@ public class CallActivity extends AppCompatActivity implements CallManager.Liste
                     FirstRunDefaults.setCallVolumeToMax(this);
                 }
                 final long connectTime = call.getDetails().getConnectTimeMillis();
-                tv_status.setText(connectTime > 0
+                final String status = connectTime > 0
                         ? getString(R.string.in_call) + "  " + formatDuration(System.currentTimeMillis() - connectTime)
-                        : getString(R.string.in_call));
+                        : getString(R.string.in_call);
+                // Muted by mistake, the user would think the call is broken: say it clearly.
+                tv_status.setText(muted ? status + "\n" + getString(R.string.muted_hint) : status);
                 showButtons(false, true);
                 setProximityScreenOff(true);
                 break;
             case Call.STATE_HOLDING:
                 tv_status.setText(R.string.on_hold);
                 showButtons(false, true);
-                setProximityScreenOff(true);
+                // Screen on: the user has to see and press "back to the call"
+                setProximityScreenOff(false);
                 break;
             case Call.STATE_SELECT_PHONE_ACCOUNT:
                 // dual SIM without a default SIM: the phone app has to ask which SIM to use
@@ -213,9 +283,20 @@ public class CallActivity extends AppCompatActivity implements CallManager.Liste
         else
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
+        // On hold: only "back to the call" and "hang up". The keypad only works in an answered call.
+        final boolean holding = state == Call.STATE_HOLDING;
+        bt_resume.setVisibility(holding ? View.VISIBLE : View.GONE);
+        callActions.setVisibility(holding ? View.GONE : View.VISIBLE);
+        bt_keypad.setEnabled(state == Call.STATE_ACTIVE);
+        bt_keypad.setAlpha(state == Call.STATE_ACTIVE ? 1f : 0.5f);
+        if (keypadShown && state != Call.STATE_ACTIVE)
+            showKeypad(false);
+
         final boolean speakerOn = CallManager.isSpeakerOn();
         bt_speaker.setText(speakerOn ? R.string.speaker_turn_off : R.string.speaker_turn_on);
         bt_speaker.setBackgroundResource(speakerOn ? R.drawable.call_button_blue : R.drawable.call_button_gray);
+        bt_mute.setText(muted ? R.string.mute_turn_off : R.string.mute_turn_on);
+        bt_mute.setBackgroundResource(muted ? R.drawable.call_button_blue : R.drawable.call_button_gray);
     }
 
     @SuppressWarnings("deprecation")
