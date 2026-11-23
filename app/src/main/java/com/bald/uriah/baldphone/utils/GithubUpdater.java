@@ -20,10 +20,12 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageInstaller;
 import android.content.pm.PackageManager;
+import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
@@ -63,6 +65,7 @@ public final class GithubUpdater {
     private static final String TAG = GithubUpdater.class.getSimpleName();
     private static final String LAST_CHECK_KEY = "GITHUB_UPDATER_LAST_CHECK";
     private static final long CHECK_EVERY_MS = 6 * 60 * 60 * 1000L;
+    private static final long RETRY_AFTER_CALL_MS = 10 * 60 * 1000L;
     private static final Pattern VERSION = Pattern.compile("^v?(\\d+)\\.(\\d+)\\.(\\d+)$");
     private static volatile boolean running;
 
@@ -144,9 +147,42 @@ public final class GithubUpdater {
         Log.i(TAG, "updating to " + tag);
         if (interactive)
             toast(context, R.string.downloading_updates, BaldToast.TYPE_INFORMATIVE);
+        if (postponeForCall(context, interactive))
+            return;
         final File apk = new File(context.getCacheDir(), "vophone-update.apk");
         download(apkUrl, apk);
         install(context, apk, interactive);
+    }
+
+    /**
+     * Installing restarts vophone, which would close the call screen in the middle of a call.
+     * If the phone is ringing or in a call (also WhatsApp-like calls), try again in a few minutes.
+     *
+     * @return true if the update must wait
+     */
+    private static boolean postponeForCall(Context context, boolean interactive) {
+        if (!isInCall(context))
+            return false;
+        Log.i(TAG, "in a call, updating later");
+        BPrefs.get(context).edit().putLong(LAST_CHECK_KEY, System.currentTimeMillis() - CHECK_EVERY_MS + RETRY_AFTER_CALL_MS).apply();
+        if (interactive)
+            toast(context, R.string.update_after_call, BaldToast.TYPE_INFORMATIVE);
+        return true;
+    }
+
+    @SuppressWarnings("deprecation")
+    private static boolean isInCall(Context context) {
+        final TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+        try {
+            if (telephonyManager != null && telephonyManager.getCallState() != TelephonyManager.CALL_STATE_IDLE)
+                return true;
+        } catch (SecurityException ignored) { // needs READ_PHONE_STATE once targetSdk is 31+
+        }
+        final AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+        if (audioManager == null)
+            return false;
+        final int mode = audioManager.getMode();
+        return mode == AudioManager.MODE_IN_CALL || mode == AudioManager.MODE_IN_COMMUNICATION || mode == AudioManager.MODE_RINGTONE;
     }
 
     @SuppressWarnings("deprecation")
@@ -169,6 +205,8 @@ public final class GithubUpdater {
     }
 
     private static void install(Context context, File apk, boolean interactive) throws IOException {
+        if (postponeForCall(context, interactive)) // a call may have started during the download
+            return;
         final PackageInstaller packageInstaller = context.getPackageManager().getPackageInstaller();
         final PackageInstaller.SessionParams params = new PackageInstaller.SessionParams(PackageInstaller.SessionParams.MODE_FULL_INSTALL);
         params.setAppPackageName(context.getPackageName());

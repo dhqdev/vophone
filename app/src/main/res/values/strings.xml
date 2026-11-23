@@ -489,4 +489,5 @@
     <string name="update_checking">Looking for a new version of vophone…</string>
     <string name="update_already_running">Already updating vophone…</string>
     <string name="update_failed">Could not update vophone now. It will try again later.</string>
+    <string name="update_after_call">vophone will update itself after the call.</string>
 </resources>
